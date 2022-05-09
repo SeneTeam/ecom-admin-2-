@@ -1,0 +1,19 @@
+@import '../../../main';
+
+input {
+    background-color: color(light-gray);
+    border: none;
+    width: 100%;
+    font-size: 11px !important;
+    font-weight: 400;
+    color: color(semi-black);
+    padding: 0.5rem 01rem;
+    border-radius: 2px;
+    outline: 1px solid color(light-gray);
+
+}
+
+input:focus-visible {
+    outline: 1px solid #e9e4e4;
+}
+

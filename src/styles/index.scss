@@ -1,0 +1,35 @@
+@import "./main";
+
+
+*, html, body {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+.f-container {
+    width: 100vw;
+    height: 100vh;
+}
+
+.bg-light-gray {
+    background-color: color(light-gray) !important;
+}
+
+.btn-print{
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+
+.bg-purple{
+    background-color: color(purple) !important;
+}
+
+.h-auto{
+    height: auto !important;
+}
+
+.w-auto{
+    width: auto !important;
+}

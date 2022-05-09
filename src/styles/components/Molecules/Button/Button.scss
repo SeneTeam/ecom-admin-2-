@@ -1,0 +1,13 @@
+@import '../../../main';
+
+button {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    background-color: color(purple);
+    border: none;
+    text-transform: uppercase !important;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 2px;
+}
