@@ -3,11 +3,11 @@ import React, {
   ButtonHTMLAttributes,
   DOMAttributes,
   ReactNode,
-} from 'react';
+} from "react";
 
 export interface CommonProps<T> extends AllHTMLAttributes<DOMAttributes<T>> {}
 
-import { Color, SelectData, ValueType } from '.';
+import { Color, SelectData, ValueType } from ".";
 
 /**
  * input props that will be shared to all input components
@@ -62,10 +62,21 @@ export interface TableActionsType<T> {
 }
 
 export type IconNames =
-  | 'print'
-  | 'add'
-  | 'home'
-  | 'arrow-right'
-  | 'arrow-right2'
-  | 'arrow-left'
-  | 'more';
+  | "print"
+  | "add"
+  | "home"
+  | "arrow-right"
+  | "arrow-right2"
+  | "arrow-left"
+  | "more";
+
+export type Menu = {
+  icon: string;
+  label: string;
+  route: string;
+  hasChildren?: boolean;
+  children?: Menu[];
+};
+export interface SidebarProps {
+  data: Menu[];
+}
