@@ -3,18 +3,16 @@ import { validToken } from "../../utils/valid-token";
 
 const ENDPOINT = import.meta.env.VITE_API_URL;
 
-export const getEmployees = () => {
+export const getEmployees = async () => {
   const url = `${ENDPOINT}/api/employees`;
-  return axios
-    .get(url, {
+  try {
+    const response = await axios.get(url, {
       headers: {
         Authorization: "Bearer " + validToken(),
       },
-    })
-    .then((res) => {
-      return res.data;
-    })
-    .catch((err) => {
-      return err;
     });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
 };

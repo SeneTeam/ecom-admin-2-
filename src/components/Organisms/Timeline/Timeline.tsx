@@ -1,12 +1,17 @@
 import React, { useCallback, useEffect } from "react";
-
+import advancedFormat from "dayjs/plugin/advancedFormat";
+import weekOfYear from "dayjs/plugin/weekOfYear";
 import GSTC from "gantt-schedule-timeline-calendar/dist/gstc.wasm.esm.min.js";
 import { Plugin as TimelinePointer } from "gantt-schedule-timeline-calendar/dist/plugins/timeline-pointer.esm.min.js";
 import { Plugin as Selection } from "gantt-schedule-timeline-calendar/dist/plugins/selection.esm.min.js";
 
 import "gantt-schedule-timeline-calendar/dist/style.css";
 import { TimesheetEmployee } from "../../../utils/format-data";
-
+import "../../../styles/components/Timeline/Timeline.scss";
+// @ts-ignore
+GSTC.api.dayjs.extend(weekOfYear);
+//@ts-ignore
+GSTC.api.dayjs.extend(advancedFormat);
 let gstc, state;
 
 // helper functions
@@ -17,7 +22,7 @@ function generateRows(employees: TimesheetEmployee[]) {
    */
   const rows: { [key: string]: TimesheetEmployee } = {};
   for (let i = 0; i < employees.length; i++) {
-    const id = employees[i].id;
+    const id = GSTC.api.GSTCID(employees[i].id);
     rows[id] = {
       ...employees[i],
     };
@@ -32,20 +37,66 @@ function generateItems(employees: TimesheetEmployee[]) {
   const items = {};
   // @ts-ignore
   let start = GSTC.api.date().startOf("day").subtract(6, "day");
-  for (let i = 0; i < employees.length; i++) {
-    const id = GSTC.api.GSTCID(i.toString());
-    const rowId = GSTC.api.GSTCID(i.toString());
-    start = start.add(1, "day");
-    items[id] = {
-      ...employees[i],
-      time: {
-        start: start.valueOf(),
-        end: start.add(1, "day").endOf("day").valueOf(),
-      },
-    };
-  }
+
+  employees.forEach((employee) => {
+    employee.workActions.forEach((workAction, index) => {
+      if (workAction) {
+        const id = GSTC.api.GSTCID(index.toString());
+        const rowId = GSTC.api.GSTCID(employee.id);
+        start = start.add(1, "day");
+        items[id] = {
+          id,
+          label: workAction.country.name,
+          rowId,
+          style: { background: workAction.country.color },
+          time: {
+            start: new Date(workAction.start),
+            end: new Date(workAction.end),
+          },
+        };
+      }
+    });
+  });
+
   return items;
 }
+
+const day = [
+  {
+    zoomTo: 100,
+    period: "day",
+    periodIncrement: 1,
+    format({ timeStart }) {
+      return timeStart.format("ddd");
+    },
+  },
+];
+const dayNumber = [
+  {
+    zoomTo: 100,
+    period: "day",
+    periodIncrement: 1,
+    format({ timeStart }) {
+      return timeStart.format("DD");
+    },
+  },
+];
+
+const customPeriod = [
+  {
+    zoomTo: 100,
+    period: "week",
+    periodIncrement: 1,
+    main: true,
+    format({ timeStart, timeEnd }) {
+      return `${timeStart.format("MMMM")} ${timeStart.format(
+        "DD"
+      )} - ${timeEnd.format("MMMM")} ${timeEnd.format(
+        "DD"
+      )} | Sav. ${timeStart.format("ww")} `;
+    },
+  },
+];
 
 function initializeGSTC({
   element,
@@ -57,10 +108,11 @@ function initializeGSTC({
   /**
    * @type { import("gantt-schedule-timeline-calendar").Config }
    */
+
   const config = {
     licenseKey:
       "====BEGIN LICENSE KEY====\naTg76WFnIgbeCK5Zd3+Zq2uu5BNewPb/E6DLtNhm08CAs2KBrFJMIYCeZVrB9JxsUxQPdVmXoDuO2baS8Etj8/8ukmcx7FgvpyneEabMGQn6SuzAJ01BE4uHbdzeV7NCC6Yzp9wBGo7TqdxTe/561xV+SZ+Y+ZNWyHxYb/7M/TVC1cLlE6g74ShC8piUBKWpG2nmBE5/AdDn6fD64iRyc52NSEpQ38vn/6ewem4ujop0B5hZ/JPUOkTEC0d/R0nuyrsATgMKqXJYlD+TdSAe5O8AYTRE8UkDYiJCXBJWRYYHEdW9tIE2FoetR4usAu5WAlTKU2NEu6yexp0VYp/mKg==||U2FsdGVkX1/xZoBVtb6PASZlwmOviioZlHDTR2o3J/SxN2rDWAuuFXTWXCAVHX8nfEIjKGbNSyYn0ks17MdeKParXCT2o/wxEoi3ibUmLy4=\nD5zWFfXQXYRenN+IWc/60CIVY34jb9vJd3Sneklf0XWmwWm/aVUsE9NTW0e5wao/mCg3iPsHxfyT4PUgAJngYNVxJl6RONa0II/sRbr0lrwjA+6wbmg1XQ2xJXOqavx7GfPjbo4IdO43EMfRFLb9BrxEQa4nsYlIJvVMe7OQEeFr2JlpHLSTZNSp+7NLEhbmWdRxuqdpAh+VO4tK8++E6Ub/OmNNkFNzjg5UwYoQPR7xfn1uGU8mLbhkPPdNcJDSzhYblYjE0dggSWb/WCclxxQFVVm86/LG1diV0UIte53y/tIqiQ6JILNHc8RpBYVwwSFqCsllWgPkuyQzUpuRXA==\n====END LICENSE KEY====",
-    plugins: [TimelinePointer(), Selection()],
+    plugins: [TimelinePointer()],
     list: {
       columns: {
         data: {
@@ -77,9 +129,17 @@ function initializeGSTC({
         },
       },
       rows: generateRows(employees),
+      toggle: {
+        display: false,
+      },
     },
     chart: {
       items: generateItems(employees),
+      calendarLevels: [customPeriod, day, dayNumber],
+      time: {
+        from: GSTC.api.date("2022-01-01").valueOf(),
+        to: GSTC.api.date("2022-01-01").endOf("year").valueOf(),
+      },
     },
   };
 

@@ -1,3 +1,30 @@
+export type WorkAction = {
+  id: string;
+  name: string;
+  code: string;
+  start: string;
+  end: string;
+  country: {
+    id: string;
+    name: string;
+    color: string;
+  };
+};
+
+export type TimeSheet = {
+  id: string;
+  year: number;
+  month: number;
+  day: number;
+  weekDay: number;
+  hours: number;
+  workAction: {
+    id: string;
+    name: string;
+    code: string;
+  };
+};
+
 export type Employee = {
   id: string;
   isActive: boolean;
@@ -57,7 +84,7 @@ export type Employee = {
   ];
   accomodations: [];
   equipments: [];
-  workActions: [];
-  timeSheets: [];
+  workActions: WorkAction[];
+  timeSheets: TimeSheet[];
   summary: null;
 };

@@ -9,6 +9,7 @@ export const mockData = {
       start: "2022-05-03T00:00:00",
       end: "2022-05-05T00:00:00",
       country: {
+        id: "",
         name: "Suomija",
         color: "#0000FF",
       },
