@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useMemo } from "react";
 import Sidebar from "../../components/Organisms/Sidebar";
 import Timeline from "../../components/Organisms/Timeline";
-import CustomTimeline from "../../components/Organisms/Timeline/Timeline";
 import { getEmployees } from "../../services/employees/employees.service";
 import {
   formatEmployeesData,
   TimesheetEmployee,
 } from "../../utils/format-data";
+import "../../styles/pages/Timesheets.scss";
 
 export default function Timesheets() {
   const [employeesData, setEmployeesData] = useState<
@@ -27,8 +27,9 @@ export default function Timesheets() {
   }, []);
 
   return (
-    <div>
-      <div className="tb">
+    <div className="timesheet-page d-flex w-100">
+      <Sidebar />
+      <div className="timesheet-page-board">
         {employeesData && employeesData.length > 0 && (
           <Timeline employees={employeesData} />
         )}

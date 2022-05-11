@@ -1,0 +1,10 @@
+.timesheet-page {
+  background-color:  #F8FAFB;
+  min-height: 100vh;
+
+
+  &-board {
+    width: calc(100% - 355px);
+    padding: 100px 0 100px 60px;
+  }
+}

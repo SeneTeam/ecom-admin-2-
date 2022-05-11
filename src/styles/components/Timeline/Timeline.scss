@@ -1,0 +1,48 @@
+.gstc__chart-calendar-date-content.gstc__chart-calendar-date-content--week {
+  font-family: Inter;
+  text-align: left;
+  font-size: 12px;
+  color: #212529;
+  margin-left: 12px;
+}
+
+.gstc__chart-calendar-date-content.gstc__chart-calendar-date-content--day {
+  font-family: Inter;
+  text-align: left;
+  font-size: 10px;
+  color: #212529;
+  width: 45px !important;
+}
+
+
+.timesheet-image {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+}
+
+.gstc__chart-timeline-grid-row-cell.current {
+  background-color: #fff !important;
+}
+
+.gstc__chart-timeline-items-row-item{
+  background-color: #fff;
+  box-shadow: 0px 2px 3px rgba(20, 50, 80, 0.05);
+  border-radius: 5px;
+  color: #212529;
+
+  .item-label {
+    font-weight: 700;
+    text-align: left;
+    font-size: 12px;
+  }
+
+  .item-description {
+    font-size: 10px;
+    margin-top: 2px;
+    line-height: 1em;
+    color: #2D5474;
+  }
+}
