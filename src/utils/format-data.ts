@@ -1,4 +1,4 @@
-import { Employee, WorkAction } from "../types/employee";
+import { Employee, TimeSheet, WorkAction } from "../types/employee";
 
 export type TimesheetEmployee = {
   id: string;
@@ -6,6 +6,7 @@ export type TimesheetEmployee = {
   role: string;
   profileUrl: string;
   workActions: WorkAction[];
+  timeSheets: TimeSheet[];
 };
 
 export const formatEmployeesData = (
@@ -17,5 +18,6 @@ export const formatEmployeesData = (
     role: employee.employeeRole.name,
     profileUrl: employee.profileUrl,
     workActions: employee.workActions,
+    timeSheets: employee.timeSheets,
   }));
 };

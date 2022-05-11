@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useLayoutEffect } from "react";
 import Sidebar from "../../components/Organisms/Sidebar";
 import Timeline from "../../components/Organisms/Timeline";
 import { getEmployees } from "../../services/employees/employees.service";
@@ -8,7 +8,7 @@ import {
 } from "../../utils/format-data";
 import "../../styles/pages/Timesheets.scss";
 
-export default function Timesheets() {
+const Timesheets = () => {
   const [employeesData, setEmployeesData] = useState<
     TimesheetEmployee[] | null
   >(null);
@@ -18,7 +18,8 @@ export default function Timesheets() {
       const response = await getEmployees();
       console.log("this is happenind");
 
-      setEmployeesData(formatEmployeesData(response));
+      const formatedResponse = formatEmployeesData(response);
+      setEmployeesData(formatedResponse);
     }
   };
 
@@ -36,4 +37,6 @@ export default function Timesheets() {
       </div>
     </div>
   );
-}
+};
+
+export default Timesheets;

@@ -14,7 +14,8 @@ import "../../../styles/components/Timeline/Timeline.scss";
 GSTC.api.dayjs.extend(weekOfYear);
 //@ts-ignore
 GSTC.api.dayjs.extend(advancedFormat);
-let gstc, state;
+
+let gstc: any, state;
 
 // helper functions
 
@@ -198,12 +199,12 @@ function initializeGSTC({
 }
 
 type TimelineProps = {
-  employees: TimesheetEmployee[];
+  employees: TimesheetEmployee[] | null;
 };
 
 function Timeline({ employees }: TimelineProps) {
   const callback = useCallback((element) => {
-    if (element)
+    if (element && employees)
       initializeGSTC({
         element,
         employees,
@@ -216,7 +217,11 @@ function Timeline({ employees }: TimelineProps) {
   //       gstc.destroy();
   //     }
   //   };
-  // });
+  // }, []);
+
+  if (!employees) {
+    return null;
+  }
 
   return (
     <div className="App">
