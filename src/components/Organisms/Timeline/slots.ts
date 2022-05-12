@@ -230,11 +230,15 @@ const createNewItems = (currentTime: number, rowId: string, api: any) => {
   let items: Items = {};
 
   console.log(currentDaysYear);
-
+  let dateIncrement = 0;
   for (let i = 0; i < [...Array(currentDaysYear).keys()].length; i++) {
     let id = api.GSTCID(String(`month-${rowId}-${i}`));
-    const startTime = fromDate.add(i, "day").startOf("day").valueOf();
-    const endTime = fromDate.add(i, "day").endOf("day").valueOf();
+    if (dateIncrement >= currentDaysYear) dateIncrement = 0;
+    const startTime = fromDate
+      .add(dateIncrement, "day")
+      .startOf("day")
+      .valueOf();
+    const endTime = fromDate.add(dateIncrement, "day").endOf("day").valueOf();
 
     items[id] = {
       id,
@@ -251,6 +255,7 @@ const createNewItems = (currentTime: number, rowId: string, api: any) => {
       overlap: false,
       top: 0,
     };
+    dateIncrement++;
   }
   return items;
 };
