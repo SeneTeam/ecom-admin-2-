@@ -30,14 +30,35 @@ function generateRows(employees: TimesheetEmployee[]) {
   /**
    * @type { import("gantt-schedule-timeline-calendar").Rows }
    */
-  const rows: { [key: string]: TimesheetEmployee } = {};
-
-  employees.forEach((employee) => {
-    const id = GSTC.api.GSTCID(employee.id);
-    rows[id] = {
-      ...employee,
+  const rows: {
+    [key: string]: TimesheetEmployee & {
+      parentId?: string;
+      expanded: boolean;
+      withParent: boolean;
     };
-  });
+  } = {};
+
+  for (let i = 0; i < employees.length * 2; i++) {
+    const withParent = i % 2 === 0;
+    const id = GSTC.api.GSTCID(withParent ? employees[i / 2].id : String(i));
+    rows[id] = {
+      parentId: !withParent
+        ? GSTC.api.GSTCID(String(employees[(i - 1) / 2].id))
+        : undefined,
+      withParent,
+      ...(withParent ? employees[i / 2] : employees[(i - 1) / 2]),
+      // ...employees[i],
+      expanded: true,
+    };
+  }
+
+  // employees.forEach((employee, index) => {
+  //   const id = GSTC.api.GSTCID(employee.id);
+  //   rows[id] = {
+  //     parentId: employee.workActions.length > 0 ? id : undefined,
+  //     ...employee,
+  //   };
+  // });
   return rows;
 }
 
@@ -132,6 +153,7 @@ function initializeGSTC({
             id: GSTC.api.GSTCID("id"),
             width: 200,
             isHTML: false,
+            expander: true,
             data: "id",
             header: {
               content: "Employees",
@@ -141,7 +163,7 @@ function initializeGSTC({
       },
       rows: generateRows(employees),
       row: {
-        height: 112,
+        height: 64,
       },
       toggle: {
         display: false,

@@ -1,3 +1,4 @@
+import { getEmployeeSummary } from "./../../../services/employees/employees.service";
 import dayjs from "dayjs";
 import GSTC from "gantt-schedule-timeline-calendar/dist/gstc.wasm.esm.min.js";
 
@@ -8,16 +9,48 @@ export const rowSlot = (vido, props) => {
 
   const month = dayjs(currentTime).format("MMM");
 
+  let withParent = "";
+
   onChange((newProps) => {
+    // console.log(newProps);
     props = newProps;
     if (!props || !props.row) return;
-    // img = props.row.img;
+    withParent = props.row.id;
     update();
   });
 
+  console.log(props.row);
+
+  if (!props.row.withParent) {
+    return (content) =>
+      html` <div class="timesheet-row">
+        <div class="timesheet-row-summary d-flex p-2 justify-content-between">
+          <div>
+            <p class="mb-0">${month}</p>
+            <p class="mb-0">${month}</p>
+            <p class="mb-0">${month}</p>
+          </div>
+          <div class="text-start">
+            <div>
+              <span>Darbo valandos</span>
+              <span class="fw-bold">${month}</span>
+            </div>
+            <div>
+              <span>Biuleteniai</span>
+              <span class="fw-bold">${month}</span>
+            </div>
+            <div>
+              <span>Viršvalandžiai</span>
+              <span class="fw-bold">${month}</span>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
   return (content) =>
     html` <div class="timesheet-row">
-      <div class="d-flex p-2 align-items-center">
+      <div class="d-flex p-2 align-items-center" style="cursor: pointer">
         <div
           class="timesheet-row-image"
           style="background-image: url(${props.row.profileUrl})"
@@ -25,27 +58,6 @@ export const rowSlot = (vido, props) => {
         <div class="text-start ms-2">
           <h6 class="mb-0 lh-base">${props.row.name}</h6>
           <p class="mb-0 lh-base">${props.row.role}</p>
-        </div>
-      </div>
-      <div class="timesheet-row-summary d-flex p-2 justify-content-between">
-        <div>
-          <p class="mb-0">${month}</p>
-          <p class="mb-0">${month}</p>
-          <p class="mb-0">${month}</p>
-        </div>
-        <div class="text-start">
-          <div>
-            <span>Darbo valandos</span>
-            <span class="fw-bold">${month}</span>
-          </div>
-          <div>
-            <span>Biuleteniai</span>
-            <span class="fw-bold">${month}</span>
-          </div>
-          <div>
-            <span>Viršvalandžiai</span>
-            <span class="fw-bold">${month}</span>
-          </div>
         </div>
       </div>
     </div>`;
@@ -102,7 +114,7 @@ export function mainOuterSlot(vido, props) {
   let loading = "";
   let overlay = "";
 
-  function updateTime() {
+  async function updateTime() {
     if (loading) return;
     const startTime = api.time
       .date(`${year}-${month + 1}-01`)
@@ -112,6 +124,15 @@ export function mainOuterSlot(vido, props) {
       .date(`${year}-${month + 1}-01`)
       .endOf("month")
       .valueOf();
+
+    console.log(vido, vido.state.data.$data.list.rowsIds);
+
+    // const response = await getEmployeeSummary({
+    //   id: props.row.id,
+    //   month,
+    //   year,
+    // });
+    // console.log(response);
     loading = "LOADING... You can load items from backend now.";
     overlay = "overlay";
     setTimeout(() => {
