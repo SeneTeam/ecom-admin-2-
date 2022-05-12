@@ -119,6 +119,7 @@ export function mainOuterSlot(vido, props) {
       state.update("config.chart.time", (time) => {
         time.from = startTime;
         time.to = endTime;
+        time.calculatedZoomMode = true;
         console.log(`${year}-${month + 1}-01`, `${year}-${month + 1}-01`);
         return time;
       });

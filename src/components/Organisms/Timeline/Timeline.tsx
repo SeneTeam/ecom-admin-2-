@@ -158,13 +158,13 @@ function initializeGSTC({
       },
       calendarLevels: [customPeriod, day, dayNumber],
       time: {
+        calculatedZoomMode: true,
         from: startDate.valueOf(),
         to: endDate.valueOf(),
       },
     },
     scroll: {
       vertical: { precise: true },
-      horizontal: { precise: true },
     },
     slots: {
       "chart-timeline-items-row-item": { content: [itemSlot] },
