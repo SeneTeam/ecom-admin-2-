@@ -1,6 +1,8 @@
 import { getEmployeeSummary } from "./../../../services/employees/employees.service";
 import dayjs from "dayjs";
 
+import { Items } from "gantt-schedule-timeline-calendar";
+
 export const rowSlot = (vido, props) => {
   const { html, onChange, update, api } = vido;
 
@@ -123,7 +125,7 @@ export function mainOuterSlot(vido, props) {
   let loading = "";
   let overlay = "";
 
-  async function updateTime() {
+  function updateTime() {
     if (loading) return;
     const startTime = api.time
       .date(`${year}-${month + 1}-01`)
@@ -133,15 +135,6 @@ export function mainOuterSlot(vido, props) {
       .date(`${year}-${month + 1}-01`)
       .endOf("month")
       .valueOf();
-
-    console.log(vido, vido.state.data.$data.list.rowsIds);
-
-    // const response = await getEmployeeSummary({
-    //   id: props.row.id,
-    //   month,
-    //   year,
-    // });
-    // console.log(response);
     loading = "LOADING... You can load items from backend now.";
     overlay = "overlay";
     setTimeout(() => {
@@ -156,19 +149,6 @@ export function mainOuterSlot(vido, props) {
       loading = "";
       overlay = "";
     }, 250);
-  }
-
-  let listenerAdded = false;
-  function getEl(element) {
-    if (listenerAdded) return;
-    element.addEventListener("change", (ev) => {
-      if (month !== ev.target.value) {
-        month = Number(ev.target.value);
-        updateTime();
-        update();
-      }
-    });
-    listenerAdded = true;
   }
 
   function setPrevYear() {
@@ -231,4 +211,90 @@ export function mainOuterSlot(vido, props) {
       </div>
       ${content}
       <div class=${overlay}>${loading}</div> `;
+}
+
+const createNewItems = (currentTime: number, rowId: string, api: any) => {
+  const currentMonthDays = dayjs(currentTime).daysInMonth();
+
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const diff =
+    now -
+    start +
+    (start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000;
+  const oneDay = 1000 * 60 * 60 * 24;
+  const currentDaysYear = Math.floor(diff / oneDay);
+
+  const fromDate = dayjs(currentTime).startOf("year");
+
+  let items: Items = {};
+
+  console.log(currentDaysYear);
+
+  for (let i = 0; i < [...Array(currentDaysYear).keys()].length; i++) {
+    let id = api.GSTCID(String(`month-${rowId}-${i}`));
+    const startTime = fromDate.add(i, "day").startOf("day").valueOf();
+    const endTime = fromDate.add(i, "day").endOf("day").valueOf();
+
+    items[id] = {
+      id,
+      rowId,
+      label: `Item ${i + 1}`,
+      time: {
+        start: startTime,
+        end: endTime,
+      },
+      description: "May 11 - 15d",
+      gap: { top: 6, bottom: 4 },
+      height: 50,
+      minWidth: 10,
+      overlap: false,
+      top: 0,
+    };
+  }
+  return items;
+};
+
+export function toggleSlot(vido, props) {
+  const { html, onChange, update, state, api } = vido;
+
+  let loading = "";
+  let currentTime = state.get("config.chart.time.from");
+
+  function updateItems() {
+    if (loading) return;
+
+    loading = "LOADING... You can load items from backend now.";
+
+    const newItems = createNewItems(
+      currentTime,
+      props.rowData.children[0],
+      api
+    );
+
+    const pastItems = state.get("config.chart.items");
+
+    state.update("config.chart.items", {
+      ...pastItems,
+      ...newItems,
+    });
+  }
+
+  function loadNewItems() {
+    if (loading) return;
+
+    if (props.row.withParent) {
+      updateItems();
+    } else {
+      return;
+    }
+    update();
+  }
+
+  onChange((newProps) => {
+    props = newProps;
+  });
+
+  return (content) =>
+    html` <div class="item-toggle" @click=${loadNewItems}>${content}</div> `;
 }

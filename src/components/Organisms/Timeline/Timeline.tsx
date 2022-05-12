@@ -4,15 +4,14 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import GSTC from "gantt-schedule-timeline-calendar/dist/gstc.wasm.esm.min.js";
 import { Plugin as TimelinePointer } from "gantt-schedule-timeline-calendar/dist/plugins/timeline-pointer.esm.min.js";
-import { Plugin as Selection } from "gantt-schedule-timeline-calendar/dist/plugins/selection.esm.min.js";
 import { Plugin as HighlightWeekends } from "gantt-schedule-timeline-calendar/dist/plugins/highlight-weekends.esm.min.js";
 
 import "gantt-schedule-timeline-calendar/dist/style.css";
 import { TimesheetEmployee } from "../../../utils/format-data";
 import "../../../styles/components/Timeline/Timeline.scss";
-import { getEmployeeSummary } from "../../../services/employees/employees.service";
-import { itemSlot, mainOuterSlot, rowSlot } from "./slots";
-import { updateItemsClassAction, updateRowClassAction } from "./actions";
+import { itemSlot, mainOuterSlot, rowSlot, toggleSlot } from "./slots";
+import { updateRowClassAction } from "./actions";
+import { Items, Config, Rows } from "gantt-schedule-timeline-calendar";
 
 //@ts-ignore
 GSTC.api.dayjs.extend(weekOfYear);
@@ -31,13 +30,7 @@ function generateRows(employees: TimesheetEmployee[]) {
   /**
    * @type { import("gantt-schedule-timeline-calendar").Rows }
    */
-  const rows: {
-    [key: string]: TimesheetEmployee & {
-      parentId?: string;
-      expanded: boolean;
-      withParent: boolean;
-    };
-  } = {};
+  const rows: Rows = {};
 
   for (let i = 0; i < employees.length * 2; i++) {
     const withParent = i % 2 === 0;
@@ -56,10 +49,7 @@ function generateRows(employees: TimesheetEmployee[]) {
 }
 
 function generateItems(employees: TimesheetEmployee[]) {
-  /**
-   * @type { import("gantt-schedule-timeline-calendar").Items }
-   */
-  const items = {};
+  const items: Items = {};
 
   employees.forEach((employee) => {
     employee.workActions.forEach((workAction, index) => {
@@ -72,8 +62,8 @@ function generateItems(employees: TimesheetEmployee[]) {
           rowId,
           style: { border: `1px solid ${workAction.country.color}` },
           time: {
-            start: new Date(workAction.start),
-            end: new Date(workAction.end),
+            start: new Date(workAction.start).getTime(),
+            end: new Date(workAction.end).getTime(),
           },
           description: `${dayjs(new Date(workAction.start)).format(
             "MMMM DD"
@@ -82,9 +72,6 @@ function generateItems(employees: TimesheetEmployee[]) {
       }
     });
   });
-
-  // console.log(GSTC.api.state.get("config.chart.time.from"));
-
   return items;
 }
 
@@ -129,13 +116,9 @@ function initializeGSTC({
   element,
   employees,
 }: {
-  element: any;
+  element: HTMLDivElement;
   employees: TimesheetEmployee[];
 }) {
-  /**
-   * @type { import("gantt-schedule-timeline-calendar").Config }
-   */
-
   const config = {
     licenseKey:
       "====BEGIN LICENSE KEY====\naTg76WFnIgbeCK5Zd3+Zq2uu5BNewPb/E6DLtNhm08CAs2KBrFJMIYCeZVrB9JxsUxQPdVmXoDuO2baS8Etj8/8ukmcx7FgvpyneEabMGQn6SuzAJ01BE4uHbdzeV7NCC6Yzp9wBGo7TqdxTe/561xV+SZ+Y+ZNWyHxYb/7M/TVC1cLlE6g74ShC8piUBKWpG2nmBE5/AdDn6fD64iRyc52NSEpQ38vn/6ewem4ujop0B5hZ/JPUOkTEC0d/R0nuyrsATgMKqXJYlD+TdSAe5O8AYTRE8UkDYiJCXBJWRYYHEdW9tIE2FoetR4usAu5WAlTKU2NEu6yexp0VYp/mKg==||U2FsdGVkX1/xZoBVtb6PASZlwmOviioZlHDTR2o3J/SxN2rDWAuuFXTWXCAVHX8nfEIjKGbNSyYn0ks17MdeKParXCT2o/wxEoi3ibUmLy4=\nD5zWFfXQXYRenN+IWc/60CIVY34jb9vJd3Sneklf0XWmwWm/aVUsE9NTW0e5wao/mCg3iPsHxfyT4PUgAJngYNVxJl6RONa0II/sRbr0lrwjA+6wbmg1XQ2xJXOqavx7GfPjbo4IdO43EMfRFLb9BrxEQa4nsYlIJvVMe7OQEeFr2JlpHLSTZNSp+7NLEhbmWdRxuqdpAh+VO4tK8++E6Ub/OmNNkFNzjg5UwYoQPR7xfn1uGU8mLbhkPPdNcJDSzhYblYjE0dggSWb/WCclxxQFVVm86/LG1diV0UIte53y/tIqiQ6JILNHc8RpBYVwwSFqCsllWgPkuyQzUpuRXA==\n====END LICENSE KEY====",
@@ -189,15 +172,15 @@ function initializeGSTC({
     slots: {
       "chart-timeline-items-row-item": { content: [itemSlot] },
       "list-column-row": { content: [rowSlot] },
+      "list-column-row-expander-toggle": { content: [toggleSlot] },
       main: { outer: [mainOuterSlot] },
     },
     actions: {
       "list-column-row": [updateRowClassAction],
-      // "chart-timeline-items-row": [updateItemsClassAction],
     },
   };
 
-  state = GSTC.api.stateFromConfig(config);
+  state = GSTC.api.stateFromConfig(config as Config);
 
   gstc = GSTC({
     element,
@@ -210,7 +193,7 @@ type TimelineProps = {
 };
 
 function Timeline({ employees }: TimelineProps) {
-  const callback = useCallback((element) => {
+  const callback = useCallback((element: HTMLDivElement) => {
     if (element && employees)
       initializeGSTC({
         element,
@@ -222,12 +205,6 @@ function Timeline({ employees }: TimelineProps) {
     if (employees && state) {
       state.update("config.list.rows", generateRows(employees));
     }
-
-    // return () => {
-    //   if (gstc) {
-    //     gstc.destroy();
-    //   }
-    // };
   }, [employees, state]);
 
   if (!employees) {
