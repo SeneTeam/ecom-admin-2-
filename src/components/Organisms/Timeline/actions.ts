@@ -79,7 +79,6 @@ async function updateRowClass(el, data) {
 }
 
 function updateItems(el, data) {
-  console.log(el, data);
   if (data.row.expanded) {
     const currentTime = data.state.get("config.chart.time.from");
 
@@ -89,26 +88,21 @@ function updateItems(el, data) {
       data.api
     );
 
-    // data.state.update(`config.chart.items`, {});
-
     setTimeout(() => {
       const pastItems = data.state.get("config.chart.items");
 
-      data.state.update("config", (config) => {
-        console.log(config);
-        config.chart.items = {
-          ...pastItems,
-          ...newItems,
-        };
-        return config;
-      });
-      // if you have items you can change view
-      // data.state.update("config.chart.items", {
-      //   newItems,
+      // data.state.update("config", (config) => {
+      //   console.log(config);
+      //   config.chart.items = {
+      //     ...pastItems,
+      //     ...newItems,
+      //   };
+      //   return config;
       // });
+      console.log("this is going on", { el, data });
+      // if you have items you can change view
+      data.state.update("config.chart.items", {});
     }, 250);
-
-    console.log(newItems, data.state.get("config.chart.items"));
   }
 }
 
