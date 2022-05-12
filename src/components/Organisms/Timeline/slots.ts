@@ -1,6 +1,5 @@
 import { getEmployeeSummary } from "./../../../services/employees/employees.service";
 import dayjs from "dayjs";
-import GSTC from "gantt-schedule-timeline-calendar/dist/gstc.wasm.esm.min.js";
 
 export const rowSlot = (vido, props) => {
   const { html, onChange, update, api } = vido;
@@ -95,7 +94,7 @@ export const itemSlot = (vido, props) => {
 export function mainOuterSlot(vido, props) {
   const { onChange, api, update, html, state, getElement } = vido;
 
-  const startDate = GSTC.api.date("2022-01-01").startOf("month");
+  const startDate = dayjs("2022-01-01").startOf("month");
   const endDate = startDate.clone().endOf("month");
   const startTime = startDate.valueOf();
 

@@ -12,7 +12,7 @@ import { TimesheetEmployee } from "../../../utils/format-data";
 import "../../../styles/components/Timeline/Timeline.scss";
 import { getEmployeeSummary } from "../../../services/employees/employees.service";
 import { itemSlot, mainOuterSlot, rowSlot } from "./slots";
-import { updateRowClassAction } from "./actions";
+import { updateItemsClassAction, updateRowClassAction } from "./actions";
 
 //@ts-ignore
 GSTC.api.dayjs.extend(weekOfYear);
@@ -23,7 +23,7 @@ const startDate = GSTC.api.date("2022-01-01").startOf("month");
 const endDate = startDate.clone().endOf("month");
 const startTime = startDate.valueOf();
 
-let gstc: any, state;
+let gstc: any, state: any;
 
 // helper functions
 
@@ -48,18 +48,10 @@ function generateRows(employees: TimesheetEmployee[]) {
         : undefined,
       withParent,
       ...(withParent ? employees[i / 2] : employees[(i - 1) / 2]),
-      // ...employees[i],
       expanded: false,
     };
   }
 
-  // employees.forEach((employee, index) => {
-  //   const id = GSTC.api.GSTCID(employee.id);
-  //   rows[id] = {
-  //     parentId: employee.workActions.length > 0 ? id : undefined,
-  //     ...employee,
-  //   };
-  // });
   return rows;
 }
 
@@ -68,7 +60,6 @@ function generateItems(employees: TimesheetEmployee[]) {
    * @type { import("gantt-schedule-timeline-calendar").Items }
    */
   const items = {};
-  // @ts-ignore
 
   employees.forEach((employee) => {
     employee.workActions.forEach((workAction, index) => {
@@ -91,6 +82,8 @@ function generateItems(employees: TimesheetEmployee[]) {
       }
     });
   });
+
+  // console.log(GSTC.api.state.get("config.chart.time.from"));
 
   return items;
 }
@@ -200,6 +193,7 @@ function initializeGSTC({
     },
     actions: {
       "list-column-row": [updateRowClassAction],
+      "chart-timeline-items-row": [updateItemsClassAction],
     },
   };
 
