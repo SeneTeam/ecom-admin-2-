@@ -11,7 +11,7 @@ import "gantt-schedule-timeline-calendar/dist/style.css";
 import { TimesheetEmployee } from "../../../utils/format-data";
 import "../../../styles/components/Timeline/Timeline.scss";
 import { getEmployeeSummary } from "../../../services/employees/employees.service";
-import { rowSlot } from "./slots";
+import { itemSlot, rowSlot } from "./slots";
 
 //@ts-ignore
 GSTC.api.dayjs.extend(weekOfYear);
@@ -39,25 +39,6 @@ function generateRows(employees: TimesheetEmployee[]) {
     };
   });
   return rows;
-}
-
-function itemSlot(vido, props) {
-  const { html, onChange, update } = vido;
-
-  let imageSrc = "";
-  let description = "";
-  onChange((newProps) => {
-    props = newProps;
-    if (!props || !props.item) return;
-    description = props.item.description;
-    update();
-  });
-
-  return (content) =>
-    html` <div class="item-text">
-      <div class="item-label">${content}</div>
-      <div class="item-description">${description}</div>
-    </div>`;
 }
 
 function generateItems(employees: TimesheetEmployee[]) {
