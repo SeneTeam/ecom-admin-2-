@@ -1,9 +1,18 @@
-import { getEmployeeSummary } from "./../../../services/employees/employees.service";
 import dayjs from "dayjs";
 
-import { Items } from "gantt-schedule-timeline-calendar";
+import {
+  Component,
+  Items,
+  RenderFunction,
+  Row,
+} from "gantt-schedule-timeline-calendar";
+import {
+  htmlResult,
+  Item,
+  Vido,
+} from "gantt-schedule-timeline-calendar/dist/gstc.wasm.esm.min";
 
-export const rowSlot = (vido, props) => {
+export const rowSlot = (vido: Vido, props: { row: Row }) => {
   const { html, onChange, update, api } = vido;
 
   const currentTime = vido.state.get("config.chart.time.from");
@@ -32,7 +41,7 @@ export const rowSlot = (vido, props) => {
     update();
   });
 
-  return (content) =>
+  return () =>
     html` <div
       class="timesheet-row       
        ${renderNewItem ? "show-summary" : ""}"
@@ -74,7 +83,7 @@ export const rowSlot = (vido, props) => {
     </div>`;
 };
 
-export const itemSlot = (vido, props) => {
+export const itemSlot = (vido: Vido, props: { item: Item }) => {
   const { html, onChange, update } = vido;
 
   let imageSrc = "";
@@ -93,7 +102,7 @@ export const itemSlot = (vido, props) => {
     </div>`;
 };
 
-export function mainOuterSlot(vido, props) {
+export function mainOuterSlot(vido: Vido, props: any) {
   const { onChange, api, update, html, state, getElement } = vido;
 
   const startDate = dayjs("2022-01-01").startOf("month");

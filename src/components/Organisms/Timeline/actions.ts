@@ -1,7 +1,11 @@
 import { getEmployeeSummary } from "./../../../services/employees/employees.service";
 import dayjs from "dayjs";
+import {
+  ActionData,
+  ActionFunctionResult,
+} from "gantt-schedule-timeline-calendar/dist/gstc.wasm.esm.min";
 
-async function updateRowClass(el, data) {
+async function updateRowClass(el: HTMLElement, data: ActionData) {
   if (data.row.expanded) {
     data.state.update(
       `config.list.rows.${[data.rowData.children[0]]}.renderNewItem`,
@@ -49,11 +53,14 @@ async function updateRowClass(el, data) {
   }
 }
 
-export function updateRowClassAction(el, data) {
+export function updateRowClassAction(
+  el: HTMLElement,
+  data: ActionData
+): ActionFunctionResult {
   updateRowClass(el, data);
   return {
     update(el, data) {
-      updateRowClass(el, data);
+      updateRowClass(el, data as ActionData);
     },
     destroy() {},
   };
