@@ -98,6 +98,19 @@
     font-size: 12px;
   }
 }
+
+.timeline-buttons {
+  margin-left: 90px;
+
+  button {
+    border: none;
+    background: #E7E7E7;
+    margin-right: 20px;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+}
+
 .gstc__chart-calendar-date.gstc__chart-calendar-date--week.gstc__chart-calendar-date--main-date.gstc__chart-calendar-date--level-0.gstc-current {
   font-weight: bold;
   * {

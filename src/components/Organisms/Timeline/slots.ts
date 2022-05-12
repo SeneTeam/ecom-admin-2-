@@ -209,18 +209,26 @@ export function mainOuterSlot(vido, props) {
 
   // return render function
   return (content) =>
-    html`<div class="timeline-selection d-flex align-items-center mb-4">
-        <button id="btn-prev-month" class="me-2" @click=${setPrevMonth}>
-          <
-        </button>
-        <span>${months[month]}</span>
-        <button id="btn-next-month" class="ms-2" @click=${setNextMonth}>
-          >
-        </button>
-        <button @click=${setPrevYear} class="mx-2"><</button>
-        <span>${year}</span>
-        <button @click=${setNextYear} class="ms-2">></button>
+    html`<div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="timeline-selection d-flex align-items-center ">
+          <button id="btn-prev-month" class="me-2" @click=${setPrevMonth}>
+            <
+          </button>
+          <span>${months[month]}</span>
+          <button id="btn-next-month" class="ms-2" @click=${setNextMonth}>
+            >
+          </button>
+          <button @click=${setPrevYear} class="mx-2"><</button>
+          <span>${year}</span>
+          <button @click=${setNextYear} class="ms-2">></button>
+        </div>
+        <div class="d-flex timeline-buttons">
+          <button class="px-4 py-2">Mygtukas</button>
+          <button class="px-4 py-2">Mygtukas</button>
+          <button class="px-4 py-2">Mygtukas</button>
+        </div>
+        </div>
       </div>
       ${content}
-      <div class=${overlay}>${loading}</div>`;
+      <div class=${overlay}>${loading}</div> `;
 }
