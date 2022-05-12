@@ -156,7 +156,6 @@ function initializeGSTC({
         height: 50,
         gap: {
           top: 14,
-          //bottom: 0,
         },
       },
       calendarLevels: [customPeriod, day, dayNumber],

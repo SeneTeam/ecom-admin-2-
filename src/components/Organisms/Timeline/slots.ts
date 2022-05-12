@@ -155,7 +155,7 @@ export function mainOuterSlot(vido: Vido, props: any) {
       state.update("config.chart.time", (time) => {
         time.from = startTime;
         time.to = endTime;
-        time.calculatedZoomMode = true;
+        // time.calculatedZoomMode = true;
         return time;
       });
       loading = "";
