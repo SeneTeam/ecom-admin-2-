@@ -131,3 +131,19 @@
     color: #9E41D6;
   }
 }
+
+.timeline-pagination {
+  color: #212529;
+  font-size: 14px;
+
+  .bold {
+    font-weight: 600;
+  }
+
+  select{
+    background-color: #fff;
+    width: 120px;
+    border: 1px solid #fff;
+    outline: none;
+  }
+}

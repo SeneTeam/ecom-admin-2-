@@ -193,7 +193,7 @@ function initializeGSTC({
     },
     actions: {
       "list-column-row": [updateRowClassAction],
-      "chart-timeline-items-row": [updateItemsClassAction],
+      // "chart-timeline-items-row": [updateItemsClassAction],
     },
   };
 
@@ -218,13 +218,17 @@ function Timeline({ employees }: TimelineProps) {
       });
   }, []);
 
-  // useEffect(() => {
-  //   return () => {
-  //     if (gstc) {
-  //       gstc.destroy();
-  //     }
-  //   };
-  // }, []);
+  useEffect(() => {
+    if (employees && state) {
+      state.update("config.list.rows", generateRows(employees));
+    }
+
+    // return () => {
+    //   if (gstc) {
+    //     gstc.destroy();
+    //   }
+    // };
+  }, [employees, state]);
 
   if (!employees) {
     return null;
