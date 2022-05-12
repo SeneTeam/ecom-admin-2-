@@ -49,3 +49,22 @@ export const rowSlot = (vido, props) => {
       </div>
     </div>`;
 };
+
+export const itemSlot = (vido, props) => {
+  const { html, onChange, update } = vido;
+
+  let imageSrc = "";
+  let description = "";
+  onChange((newProps) => {
+    props = newProps;
+    if (!props || !props.item) return;
+    description = props.item.description;
+    update();
+  });
+
+  return (content) =>
+    html` <div class="item-text">
+      <div class="item-label">${content}</div>
+      <div class="item-description">${description}</div>
+    </div>`;
+};
