@@ -14,13 +14,31 @@
   width: 45px !important;
 }
 
+.timesheet-row {
 
-.timesheet-image {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-size: cover;
-  background-position: center;
+  &-image {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+  }
+
+  &-summary{
+    background: #F8FAFB;
+    font-size: 10px;
+    height: 48px;
+    box-shadow: inset 0px 1px 0px #EFF3F6;
+    line-height: 1em;
+
+    & * {
+      line-height: 1em;
+    }
+
+    & p {
+      line-height: 1.1em;
+    }
+  }
 }
 
 .gstc__chart-timeline-grid-row-cell.current {

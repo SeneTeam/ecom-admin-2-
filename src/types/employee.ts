@@ -25,6 +25,27 @@ export type TimeSheet = {
   };
 };
 
+export type WorkActionSummary = {
+  id: string;
+  totDays: number;
+  totHours: number;
+  workAction: {
+    id: string;
+    name: string;
+    code: string;
+  };
+};
+
+export type Summary = {
+  id: string;
+  year: number;
+  month: number;
+  totDays: number;
+  totHours: number;
+  totHoursByContract: number;
+  workActionSummary: WorkActionSummary[];
+};
+
 export type Employee = {
   id: string;
   isActive: boolean;

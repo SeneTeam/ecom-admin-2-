@@ -16,3 +16,25 @@ export const getEmployees = async () => {
     console.error(error);
   }
 };
+
+export const getEmployeeSummary = async ({
+  id,
+  year,
+  month,
+}: {
+  id: string;
+  year: number;
+  month: number;
+}) => {
+  const url = `${ENDPOINT}/api/employees/${id}/year=${year}/month=${month}`;
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: "Bearer " + validToken(),
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};

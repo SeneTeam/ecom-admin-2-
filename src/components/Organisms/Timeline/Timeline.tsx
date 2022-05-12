@@ -10,10 +10,17 @@ import { Plugin as HighlightWeekends } from "gantt-schedule-timeline-calendar/di
 import "gantt-schedule-timeline-calendar/dist/style.css";
 import { TimesheetEmployee } from "../../../utils/format-data";
 import "../../../styles/components/Timeline/Timeline.scss";
-// @ts-ignore
+import { getEmployeeSummary } from "../../../services/employees/employees.service";
+import { rowSlot } from "./slots";
+
+//@ts-ignore
 GSTC.api.dayjs.extend(weekOfYear);
 //@ts-ignore
 GSTC.api.dayjs.extend(advancedFormat);
+
+const startDate = GSTC.api.date("2022-01-01").startOf("month");
+const endDate = startDate.clone().endOf("month");
+const startTime = startDate.valueOf();
 
 let gstc: any, state;
 
@@ -24,12 +31,13 @@ function generateRows(employees: TimesheetEmployee[]) {
    * @type { import("gantt-schedule-timeline-calendar").Rows }
    */
   const rows: { [key: string]: TimesheetEmployee } = {};
-  for (let i = 0; i < employees.length; i++) {
-    const id = GSTC.api.GSTCID(employees[i].id);
+
+  employees.forEach((employee) => {
+    const id = GSTC.api.GSTCID(employee.id);
     rows[id] = {
-      ...employees[i],
+      ...employee,
     };
-  }
+  });
   return rows;
 }
 
@@ -142,16 +150,8 @@ function initializeGSTC({
           [GSTC.api.GSTCID("id")]: {
             id: GSTC.api.GSTCID("id"),
             width: 200,
-            data({ row, vido }: any) {
-              return vido.html`<div class="d-flex p-2 align-items-center">
-              <div class="timesheet-image" style="background-image: url(${row.profileUrl})">
-              </div>
-              <div class="text-start ms-2">
-              <h6 class="mb-0 lh-base">${row.name}</h6>
-              <p class="mb-0 lh-base">${row.role}</p>
-              </div>
-              </div>`;
-            },
+            isHTML: false,
+            data: "id",
             header: {
               content: "Employees",
             },
@@ -160,7 +160,7 @@ function initializeGSTC({
       },
       rows: generateRows(employees),
       row: {
-        height: 68,
+        height: 112,
       },
       toggle: {
         display: false,
@@ -177,8 +177,8 @@ function initializeGSTC({
       },
       calendarLevels: [customPeriod, day, dayNumber],
       time: {
-        from: GSTC.api.date("2022-01-01").valueOf(),
-        to: GSTC.api.date("2022-01-01").endOf("year").valueOf(),
+        from: startDate.valueOf(),
+        to: endDate.valueOf(),
       },
     },
     scroll: {
@@ -187,6 +187,7 @@ function initializeGSTC({
     },
     slots: {
       "chart-timeline-items-row-item": { content: [itemSlot] },
+      "list-column-row": { content: [rowSlot] },
     },
   };
 
