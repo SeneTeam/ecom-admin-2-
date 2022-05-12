@@ -11,7 +11,7 @@ import "gantt-schedule-timeline-calendar/dist/style.css";
 import { TimesheetEmployee } from "../../../utils/format-data";
 import "../../../styles/components/Timeline/Timeline.scss";
 import { getEmployeeSummary } from "../../../services/employees/employees.service";
-import { expanderSlot, itemSlot, mainOuterSlot, rowSlot } from "./slots";
+import { itemSlot, mainOuterSlot, rowSlot } from "./slots";
 import { updateRowClassAction } from "./actions";
 
 //@ts-ignore
@@ -169,6 +169,10 @@ function initializeGSTC({
       toggle: {
         display: false,
       },
+      expander: {
+        padding: 0,
+        size: 12,
+      },
     },
     chart: {
       items: generateItems(employees),
@@ -193,7 +197,6 @@ function initializeGSTC({
       "chart-timeline-items-row-item": { content: [itemSlot] },
       "list-column-row": { content: [rowSlot] },
       main: { outer: [mainOuterSlot] },
-      // "list-column-row-expander-toggle": { outer: [expanderSlot] },
     },
     actions: {
       "list-column-row": [updateRowClassAction],

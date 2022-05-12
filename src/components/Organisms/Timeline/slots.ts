@@ -225,21 +225,3 @@ export function mainOuterSlot(vido, props) {
       ${content}
       <div class=${overlay}>${loading}</div>`;
 }
-
-export function expanderSlot(vido, props) {
-  const { onChange } = vido;
-
-  let showArrow = true;
-
-  onChange((changedProps) => {
-    props = changedProps;
-    if (!props.column) return;
-    // if(props.column.id == ){
-    //    showArrow = !!props.column.apptAccountName;
-    // }else if(props.column.id == /* appt service */){
-    //    showArrow = !!props.column.appServiceName;
-    // }
-  });
-
-  return (content) => null;
-}
