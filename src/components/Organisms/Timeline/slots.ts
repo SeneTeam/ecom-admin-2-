@@ -1,3 +1,4 @@
+import { formatTimesheet } from "./../../../utils/format-data";
 import dayjs from "dayjs";
 
 import {
@@ -6,11 +7,14 @@ import {
   RenderFunction,
   Row,
 } from "gantt-schedule-timeline-calendar";
+import { Api } from "gantt-schedule-timeline-calendar/dist/api/api";
 import {
   htmlResult,
   Item,
+  RowData,
   Vido,
 } from "gantt-schedule-timeline-calendar/dist/gstc.wasm.esm.min";
+import { TimeSheet } from "../../../types/employee";
 
 export const rowSlot = (vido: Vido, props: { row: Row }) => {
   const { html, onChange, update, api } = vido;
@@ -152,7 +156,6 @@ export function mainOuterSlot(vido: Vido, props: any) {
         time.from = startTime;
         time.to = endTime;
         time.calculatedZoomMode = true;
-        console.log(`${year}-${month + 1}-01`, `${year}-${month + 1}-01`);
         return time;
       });
       loading = "";
@@ -222,9 +225,17 @@ export function mainOuterSlot(vido: Vido, props: any) {
       <div class=${overlay}>${loading}</div> `;
 }
 
-const createNewItems = (currentTime: number, rowId: string, api: any) => {
-  const currentMonthDays = dayjs(currentTime).daysInMonth();
-
+const createNewItems = ({
+  currentTime,
+  rowId,
+  api,
+  timeSheets,
+}: {
+  currentTime: number;
+  rowId: string;
+  api: Api;
+  timeSheets: TimeSheet[];
+}) => {
   const now = new Date();
   const start = new Date(now.getFullYear(), 0, 0);
   const diff =
@@ -238,7 +249,6 @@ const createNewItems = (currentTime: number, rowId: string, api: any) => {
 
   let items: Items = {};
 
-  console.log(currentDaysYear);
   let dateIncrement = 0;
   for (let i = 0; i < [...Array(currentDaysYear).keys()].length; i++) {
     let id = api.GSTCID(String(`month-${rowId}-${i}`));
@@ -249,15 +259,33 @@ const createNewItems = (currentTime: number, rowId: string, api: any) => {
       .valueOf();
     const endTime = fromDate.add(dateIncrement, "day").endOf("day").valueOf();
 
+    let selectedTimeSheet: {
+      startTime: number;
+      hours: number;
+      code: string;
+    }[] = [];
+
+    if (timeSheets.length > 0) {
+      const formattedTimeSheets = formatTimesheet(timeSheets);
+      selectedTimeSheet = formattedTimeSheets.filter(
+        (timeSheet) => timeSheet.startTime === startTime
+      );
+    }
+
     items[id] = {
       id,
       rowId,
-      label: `Item ${i + 1}`,
+      label:
+        selectedTimeSheet.length > 0 ? selectedTimeSheet[0].code || "DV" : `DV`,
+      isTimeSheet: true,
       time: {
         start: startTime,
         end: endTime,
       },
-      description: "May 11 - 15d",
+      description:
+        selectedTimeSheet.length > 0
+          ? `${selectedTimeSheet[0].hours || 0}h`
+          : `8h`,
       gap: { top: 6, bottom: 4 },
       height: 50,
       minWidth: 10,
@@ -269,7 +297,10 @@ const createNewItems = (currentTime: number, rowId: string, api: any) => {
   return items;
 };
 
-export function toggleSlot(vido, props) {
+export function toggleSlot(
+  vido: Vido,
+  props: { row: Row } & { rowData: RowData }
+) {
   const { html, onChange, update, state, api } = vido;
 
   let loading = "";
@@ -280,11 +311,12 @@ export function toggleSlot(vido, props) {
 
     loading = "LOADING... You can load items from backend now.";
 
-    const newItems = createNewItems(
+    const newItems = createNewItems({
       currentTime,
-      props.rowData.children[0],
-      api
-    );
+      rowId: props.rowData.children[0],
+      api,
+      timeSheets: props.row.timeSheets,
+    });
 
     const pastItems = state.get("config.chart.items");
 

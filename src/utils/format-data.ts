@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { Employee, TimeSheet, WorkAction } from "../types/employee";
 
 export type TimesheetEmployee = {
@@ -19,5 +20,15 @@ export const formatEmployeesData = (
     profileUrl: employee.profileUrl,
     workActions: employee.workActions,
     timeSheets: employee.timeSheets,
+  }));
+};
+
+export const formatTimesheet = (timeSheets: TimeSheet[]) => {
+  return timeSheets.map((timeSheet) => ({
+    startTime: dayjs(`${timeSheet.month}-${timeSheet.day}-${timeSheet.year}`)
+      .startOf("day")
+      .valueOf(),
+    hours: timeSheet.hours,
+    code: timeSheet.workAction.code,
   }));
 };
