@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import GSTC from "gantt-schedule-timeline-calendar/dist/gstc.wasm.esm.min.js";
 
 export const rowSlot = (vido, props) => {
   const { html, onChange, update, api } = vido;
@@ -68,3 +69,127 @@ export const itemSlot = (vido, props) => {
       <div class="item-description">${description}</div>
     </div>`;
 };
+
+export function mainOuterSlot(vido, props) {
+  const { onChange, api, update, html, state, getElement } = vido;
+
+  const startDate = GSTC.api.date("2022-01-01").startOf("month");
+  const endDate = startDate.clone().endOf("month");
+  const startTime = startDate.valueOf();
+
+  onChange((changedProps) => {
+    // if current element is reused to display other item data just update your data so when you click you will display right alert
+    props = changedProps;
+  });
+
+  let year = api.time.date(startTime).year();
+  let month = api.time.date(startTime).month();
+  const months = [
+    "Sausis",
+    "Vasaris",
+    "Kovas",
+    "Balandis",
+    "Gegužė",
+    "Birželis",
+    "Liepa",
+    "Rugpjūtis",
+    "Rugsėjis",
+    "Spalis",
+    "Lapkritis",
+    "Gruodis",
+  ];
+
+  let loading = "";
+  let overlay = "";
+
+  function updateTime() {
+    if (loading) return;
+    const startTime = api.time
+      .date(`${year}-${month + 1}-01`)
+      .startOf("month")
+      .valueOf();
+    const endTime = api.time
+      .date(`${year}-${month + 1}-01`)
+      .endOf("month")
+      .valueOf();
+    loading = "LOADING... You can load items from backend now.";
+    overlay = "overlay";
+    setTimeout(() => {
+      // if you have items you can change view
+      state.update("config.chart.time", (time) => {
+        time.from = startTime;
+        time.to = endTime;
+        console.log(`${year}-${month + 1}-01`, `${year}-${month + 1}-01`);
+        return time;
+      });
+      loading = "";
+      overlay = "";
+    }, 250);
+  }
+
+  let listenerAdded = false;
+  function getEl(element) {
+    if (listenerAdded) return;
+    element.addEventListener("change", (ev) => {
+      if (month !== ev.target.value) {
+        month = Number(ev.target.value);
+        updateTime();
+        update();
+      }
+    });
+    listenerAdded = true;
+  }
+
+  function setPrevYear() {
+    if (loading) return;
+    year -= 1;
+    updateTime();
+    update();
+  }
+
+  function setNextYear() {
+    if (loading) return;
+    year += 1;
+    updateTime();
+    update();
+  }
+
+  function setPrevMonth() {
+    if (loading) return;
+    month -= 1;
+    if (month < 0) {
+      month = 11;
+      year--;
+    }
+    updateTime();
+    update();
+  }
+
+  function setNextMonth() {
+    if (loading) return;
+    month += 1;
+    if (month > 11) {
+      month = 0;
+      year++;
+    }
+    updateTime();
+    update();
+  }
+
+  // return render function
+  return (content) =>
+    html`<div class="timeline-selection d-flex align-items-center mb-4">
+        <button id="btn-prev-month" class="me-2" @click=${setPrevMonth}>
+          <
+        </button>
+        <span>${months[month]}</span>
+        <button id="btn-next-month" class="ms-2" @click=${setNextMonth}>
+          >
+        </button>
+        <button @click=${setPrevYear} class="mx-2"><</button>
+        <span>${year}</span>
+        <button @click=${setNextYear} class="ms-2">></button>
+      </div>
+      ${content}
+      <div class=${overlay}>${loading}</div>`;
+}

@@ -11,7 +11,7 @@ import "gantt-schedule-timeline-calendar/dist/style.css";
 import { TimesheetEmployee } from "../../../utils/format-data";
 import "../../../styles/components/Timeline/Timeline.scss";
 import { getEmployeeSummary } from "../../../services/employees/employees.service";
-import { itemSlot, rowSlot } from "./slots";
+import { itemSlot, mainOuterSlot, rowSlot } from "./slots";
 
 //@ts-ignore
 GSTC.api.dayjs.extend(weekOfYear);
@@ -169,6 +169,7 @@ function initializeGSTC({
     slots: {
       "chart-timeline-items-row-item": { content: [itemSlot] },
       "list-column-row": { content: [rowSlot] },
+      main: { outer: [mainOuterSlot] },
     },
   };
 
