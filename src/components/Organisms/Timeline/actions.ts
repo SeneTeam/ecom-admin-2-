@@ -1,18 +1,52 @@
+import { getEmployeeSummary } from "./../../../services/employees/employees.service";
 import GSTC from "gantt-schedule-timeline-calendar/dist/gstc.wasm.esm.min.js";
+import dayjs from "dayjs";
 
-function updateRowClass(el, data) {
-  const hasClass = el.classList.contains("example-class");
-  if (data.row.expanded && !hasClass) {
-    el.classList.add("example-class");
-    console.log("dont has class", data);
+async function updateRowClass(el, data) {
+  if (data.row.expanded) {
     data.state.update(
       `config.list.rows.${[data.rowData.children[0]]}.renderNewItem`,
       true
     );
-  } else if (!data.row.expanded && hasClass) {
-    el.classList.remove("example-class");
-    console.log("has class");
+
+    const currentTime = data.state.get("config.chart.time.from");
+
+    data.state.update(
+      `config.list.rows.${[data.rowData.children[0]]}.monthLabel`,
+      dayjs(currentTime).format("MMMM")
+    );
+    data.state.update(
+      `config.list.rows.${[data.rowData.children[0]]}.monthNumber`,
+      dayjs(currentTime).format("MM")
+    );
+    data.state.update(
+      `config.list.rows.${[data.rowData.children[0]]}.monthDays`,
+      `1 - ${dayjs(currentTime).daysInMonth()}d`
+    );
+
+    const month = dayjs(currentTime).month();
+    const year = dayjs(currentTime).year();
+
+    const response = await getEmployeeSummary({
+      id: data.row.id.replace("gstcid-", ""),
+      month,
+      year,
+    });
+    data.state.update(
+      `config.list.rows.${[data.rowData.children[0]]}.totDays`,
+      `${response.totDays}h`
+    );
+    data.state.update(
+      `config.list.rows.${[data.rowData.children[0]]}.totHours`,
+      `${response.totHours}h`
+    );
+    data.state.update(
+      `config.list.rows.${[data.rowData.children[0]]}.totHoursByContract`,
+      `${response.totHoursByContract}h`
+    );
+    console.log(response);
   }
+
   // console.log(el, data);
 }
 

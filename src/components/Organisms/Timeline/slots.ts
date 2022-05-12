@@ -7,15 +7,27 @@ export const rowSlot = (vido, props) => {
 
   const currentTime = vido.state.get("config.chart.time.from");
 
-  const month = dayjs(currentTime).format("MMM");
+  let monthLabel = dayjs(currentTime).format("MMMM");
+  let monthNumber = dayjs(currentTime).format("MM");
+  let monthDays = `1 - ${dayjs(currentTime).daysInMonth()}d`;
+  let totDays = "";
+  let totHours = "";
+  let totHoursByContract = "";
 
   let renderNewItem = false;
 
   onChange((newProps) => {
-    // console.log(newProps);
     props = newProps;
     if (!props || !props.row) return;
     renderNewItem = Boolean(props.row.renderNewItem);
+
+    monthLabel = props.row.monthLabel;
+    monthNumber = props.row.monthNumber;
+    monthDays = props.row.monthDays;
+    totDays = props.row.totDays;
+    totHours = props.row.totHours;
+    totHoursByContract = props.row.totHoursByContract;
+
     update();
   });
 
@@ -39,22 +51,22 @@ export const rowSlot = (vido, props) => {
       </div>
       <div class="timesheet-row-summary p-2 justify-content-between">
         <div>
-          <p class="mb-1">${month}</p>
-          <p class="mb-1">${month}</p>
-          <p class="mb-0">${month}</p>
+          <p class="mb-1">${monthLabel}</p>
+          <p class="mb-1">${monthNumber}</p>
+          <p class="mb-0">${monthDays}</p>
         </div>
         <div class="text-start">
           <div class="mb-1">
             <span>Darbo valandos</span>
-            <span class="fw-bold">${month}</span>
+            <span class="fw-bold">${totHoursByContract}</span>
           </div>
           <div class="mb-1">
             <span>Biuleteniai</span>
-            <span class="fw-bold">${month}</span>
+            <span class="fw-bold">${totHours}</span>
           </div>
           <div>
             <span>Viršvalandžiai</span>
-            <span class="fw-bold">${month}</span>
+            <span class="fw-bold">${totDays}</span>
           </div>
         </div>
       </div>

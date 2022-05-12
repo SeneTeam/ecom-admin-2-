@@ -26,7 +26,7 @@ export const getEmployeeSummary = async ({
   year: number;
   month: number;
 }) => {
-  const url = `${ENDPOINT}/api/employees/${id}/year=${year}/month=${month}`;
+  const url = `${ENDPOINT}/api/employees/${id}/summary/year=${year}/month=${month}`;
   try {
     const response = await axios.get(url, {
       headers: {
