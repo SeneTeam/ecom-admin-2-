@@ -16,6 +16,26 @@
 
 .timesheet-row {
 
+  & .timesheet-profile {
+    display: flex;
+  }
+
+  &.show-summary {
+    & .timesheet-row-summary{
+      display: flex;
+    }
+    & .timesheet-profile {
+      display: none;
+    }
+  }
+
+  &-profile {
+    * {
+      line-height: 1em;
+      font-size: 12px;
+    }
+  }
+
   &-image {
     width: 32px;
     height: 32px;
@@ -25,9 +45,10 @@
   }
 
   &-summary{
+    display: none;
     background: #F8FAFB;
     font-size: 10px;
-    height: 48px;
+    height: 64px;
     box-shadow: inset 0px 1px 0px #EFF3F6;
     line-height: 1em;
 

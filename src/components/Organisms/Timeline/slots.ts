@@ -9,55 +9,53 @@ export const rowSlot = (vido, props) => {
 
   const month = dayjs(currentTime).format("MMM");
 
-  let withParent = "";
+  let renderNewItem = false;
 
   onChange((newProps) => {
     // console.log(newProps);
     props = newProps;
     if (!props || !props.row) return;
-    withParent = props.row.id;
+    renderNewItem = Boolean(props.row.renderNewItem);
     update();
   });
 
-  console.log(props.row);
-
-  if (!props.row.withParent) {
-    return (content) =>
-      html` <div class="timesheet-row">
-        <div class="timesheet-row-summary d-flex p-2 justify-content-between">
-          <div>
-            <p class="mb-0">${month}</p>
-            <p class="mb-0">${month}</p>
-            <p class="mb-0">${month}</p>
-          </div>
-          <div class="text-start">
-            <div>
-              <span>Darbo valandos</span>
-              <span class="fw-bold">${month}</span>
-            </div>
-            <div>
-              <span>Biuleteniai</span>
-              <span class="fw-bold">${month}</span>
-            </div>
-            <div>
-              <span>Viršvalandžiai</span>
-              <span class="fw-bold">${month}</span>
-            </div>
-          </div>
-        </div>
-      </div>`;
-  }
-
   return (content) =>
-    html` <div class="timesheet-row">
-      <div class="d-flex p-2 align-items-center" style="cursor: pointer">
+    html` <div
+      class="timesheet-row       
+       ${renderNewItem ? "show-summary" : ""}"
+    >
+      <div
+        class="p-2 align-items-center timesheet-profile"
+        style="cursor: pointer"
+      >
         <div
           class="timesheet-row-image"
           style="background-image: url(${props.row.profileUrl})"
         ></div>
-        <div class="text-start ms-2">
+        <div class="text-start ms-2 timesheet-row-profile">
           <h6 class="mb-0 lh-base">${props.row.name}</h6>
           <p class="mb-0 lh-base">${props.row.role}</p>
+        </div>
+      </div>
+      <div class="timesheet-row-summary p-2 justify-content-between">
+        <div>
+          <p class="mb-1">${month}</p>
+          <p class="mb-1">${month}</p>
+          <p class="mb-0">${month}</p>
+        </div>
+        <div class="text-start">
+          <div class="mb-1">
+            <span>Darbo valandos</span>
+            <span class="fw-bold">${month}</span>
+          </div>
+          <div class="mb-1">
+            <span>Biuleteniai</span>
+            <span class="fw-bold">${month}</span>
+          </div>
+          <div>
+            <span>Viršvalandžiai</span>
+            <span class="fw-bold">${month}</span>
+          </div>
         </div>
       </div>
     </div>`;
@@ -214,4 +212,22 @@ export function mainOuterSlot(vido, props) {
       </div>
       ${content}
       <div class=${overlay}>${loading}</div>`;
+}
+
+export function expanderSlot(vido, props) {
+  const { onChange } = vido;
+
+  let showArrow = true;
+
+  onChange((changedProps) => {
+    props = changedProps;
+    if (!props.column) return;
+    // if(props.column.id == ){
+    //    showArrow = !!props.column.apptAccountName;
+    // }else if(props.column.id == /* appt service */){
+    //    showArrow = !!props.column.appServiceName;
+    // }
+  });
+
+  return (content) => null;
 }
