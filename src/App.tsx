@@ -33,9 +33,9 @@ const App = () => {
           <Route path="dashboard" element={<MainLayout />}>
             <Route path="employees" element={<Employees />} />
             <Route path="employees/:id" element={<EmployeeDetails />} />
+            <Route path="timesheets" element={<Timesheets />} />
           </Route>
           <Route path="/usage" element={<ShowCase />} />
-          <Route path="/timesheets" element={<Timesheets />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Router>
