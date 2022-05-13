@@ -19,7 +19,7 @@ export default function Sidebar() {
   if (user) {
     const role: IRole = getPriorityRole(user.currentUserRoles);
     console.log(role);
-    //    sidebarItems = getRoleSidebar(role);
+    sidebarItems = getRoleSidebar(role);
     console.log("", sidebarItems);
     //    setResolved(true);
   }
