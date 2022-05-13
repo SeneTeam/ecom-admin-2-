@@ -1,5 +1,4 @@
 import { getEmployeeSummary } from "./../../../services/employees/employees.service";
-import dayjs from "dayjs";
 import {
   ActionData,
   ActionFunctionResult,
@@ -16,21 +15,21 @@ async function updateRowClass(el: HTMLElement, data: ActionData) {
 
     data.state.update(
       `config.list.rows.${[data.rowData.children[0]]}.monthLabel`,
-      dayjs(currentTime).format("MMMM")
+      data.api.time.date(currentTime).format("MMMM")
     );
     data.state.update(
       `config.list.rows.${[data.rowData.children[0]]}.monthNumber`,
-      dayjs(currentTime).format("MM")
+      data.api.time.date(currentTime).format("MM")
     );
     data.state.update(
       `config.list.rows.${[data.rowData.children[0]]}.monthDays`,
-      `1 - ${dayjs(currentTime).daysInMonth()}d`
+      `1 - ${data.api.time.date(currentTime).daysInMonth()}d`
     );
 
     if (data.rowData.children.length > 0) {
-      const month = dayjs(currentTime).month();
+      const month = data.api.time.date(currentTime).month();
 
-      const year = dayjs(currentTime).year();
+      const year = data.api.time.date(currentTime).year();
 
       const response = await getEmployeeSummary({
         id: data.row.id.replace("gstcid-", ""),

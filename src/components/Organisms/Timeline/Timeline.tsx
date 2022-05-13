@@ -18,10 +18,6 @@ GSTC.api.dayjs.extend(weekOfYear);
 //@ts-ignore
 GSTC.api.dayjs.extend(advancedFormat);
 
-const startDate = GSTC.api.date("2022-01-01").startOf("month");
-const endDate = startDate.clone().endOf("month");
-const startTime = startDate.valueOf();
-
 let gstc: any, state: any;
 
 // helper functions
@@ -62,8 +58,8 @@ function generateItems(employees: TimesheetEmployee[]) {
           rowId,
           style: { border: `1px solid ${workAction.country.color}` },
           time: {
-            start: new Date(workAction.start).getTime(),
-            end: new Date(workAction.end).getTime(),
+            start: GSTC.api.date(workAction.start).valueOf(),
+            end: GSTC.api.date(workAction.end).valueOf(),
           },
           description: `${dayjs(new Date(workAction.start)).format(
             "MMMM DD"
@@ -79,6 +75,7 @@ const day = [
   {
     zoomTo: 100,
     period: "day",
+    main: true,
     periodIncrement: 1,
     format({ timeStart }) {
       return timeStart.format("ddd");
@@ -101,7 +98,6 @@ const customPeriod = [
     zoomTo: 100,
     period: "week",
     periodIncrement: 1,
-    main: true,
     format({ timeStart, timeEnd }) {
       return `${timeStart.format("MMMM")} ${timeStart.format(
         "DD"
@@ -161,8 +157,8 @@ function initializeGSTC({
       calendarLevels: [customPeriod, day, dayNumber],
       time: {
         calculatedZoomMode: true,
-        from: startDate.valueOf(),
-        to: endDate.valueOf(),
+        from: GSTC.api.date("2022-01-01").valueOf(),
+        to: GSTC.api.date("2022-01-01").endOf("month").valueOf(),
       },
     },
     scroll: {

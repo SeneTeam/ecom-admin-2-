@@ -22,9 +22,11 @@ const Timesheets = () => {
     if (!employeesData) {
       const response = await getEmployees();
 
-      const formatedResponse = formatEmployeesData(response);
-      setEmployeesData(formatedResponse);
-      setFilteredEmployeesData(formatedResponse);
+      if (response) {
+        const formatedResponse = formatEmployeesData(response);
+        setEmployeesData(formatedResponse);
+        setFilteredEmployeesData(formatedResponse);
+      }
     }
   };
 

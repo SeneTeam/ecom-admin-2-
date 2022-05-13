@@ -2,7 +2,9 @@ import { formatTimesheet } from "./../../../utils/format-data";
 import dayjs from "dayjs";
 
 import {
+  ChartTimeDate,
   Component,
+  DataChartTime,
   Items,
   RenderFunction,
   Row,
@@ -11,6 +13,7 @@ import { Api } from "gantt-schedule-timeline-calendar/dist/api/api";
 import {
   htmlResult,
   Item,
+  ItemTime,
   RowData,
   Vido,
 } from "gantt-schedule-timeline-calendar/dist/gstc.wasm.esm.min";
@@ -21,9 +24,9 @@ export const rowSlot = (vido: Vido, props: { row: Row }) => {
 
   const currentTime = vido.state.get("config.chart.time.from");
 
-  let monthLabel = dayjs(currentTime).format("MMMM");
-  let monthNumber = dayjs(currentTime).format("MM");
-  let monthDays = `1 - ${dayjs(currentTime).daysInMonth()}d`;
+  let monthLabel = api.time.date(currentTime).format("MMMM");
+  let monthNumber = api.time.date(currentTime).format("MM");
+  let monthDays = `1 - ${api.time.date(currentTime).daysInMonth()}d`;
   let totDays = "";
   let totHours = "";
   let totHoursByContract = "";
@@ -99,7 +102,7 @@ export const itemSlot = (vido: Vido, props: { item: Item }) => {
     update();
   });
 
-  return (content) =>
+  return (content: htmlResult) =>
     html` <div class="item-text">
       <div class="item-label">${content}</div>
       <div class="item-description">${description}</div>
@@ -109,12 +112,11 @@ export const itemSlot = (vido: Vido, props: { item: Item }) => {
 export function mainOuterSlot(vido: Vido, props: any) {
   const { onChange, api, update, html, state, getElement } = vido;
 
-  const startDate = dayjs("2022-01-01").startOf("month");
+  const startDate = api.time.date("2022-01-01").startOf("month");
   const endDate = startDate.clone().endOf("month");
   const startTime = startDate.valueOf();
 
   onChange((changedProps) => {
-    // if current element is reused to display other item data just update your data so when you click you will display right alert
     props = changedProps;
   });
 
@@ -152,7 +154,7 @@ export function mainOuterSlot(vido: Vido, props: any) {
     overlay = "overlay";
     setTimeout(() => {
       // if you have items you can change view
-      state.update("config.chart.time", (time) => {
+      state.update("config.chart.time", (time: DataChartTime) => {
         time.from = startTime;
         time.to = endTime;
         // time.calculatedZoomMode = true;
@@ -200,7 +202,7 @@ export function mainOuterSlot(vido: Vido, props: any) {
   }
 
   // return render function
-  return (content) =>
+  return (content: htmlResult) =>
     html`<div class="d-flex justify-content-between align-items-center mb-4">
         <div class="timeline-selection d-flex align-items-center ">
           <button id="btn-prev-month" class="me-2" @click=${setPrevMonth}>
@@ -245,7 +247,7 @@ const createNewItems = ({
   const oneDay = 1000 * 60 * 60 * 24;
   const currentDaysYear = Math.floor(diff / oneDay);
 
-  const fromDate = dayjs(currentTime).startOf("year");
+  const fromDate = api.time.date(currentTime).startOf("year");
 
   let items: Items = {};
 
@@ -286,11 +288,6 @@ const createNewItems = ({
         selectedTimeSheet.length > 0
           ? `${selectedTimeSheet[0].hours || 0}h`
           : `8h`,
-      gap: { top: 6, bottom: 4 },
-      height: 50,
-      minWidth: 10,
-      overlap: false,
-      top: 0,
     };
     dateIncrement++;
   }
@@ -334,13 +331,13 @@ export function toggleSlot(
     } else {
       return;
     }
-    update();
   }
 
   onChange((newProps) => {
     props = newProps;
+    update();
   });
 
-  return (content) =>
+  return (content: htmlResult) =>
     html` <div class="item-toggle" @click=${loadNewItems}>${content}</div> `;
 }
