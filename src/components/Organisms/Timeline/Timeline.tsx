@@ -7,11 +7,12 @@ import { Plugin as TimelinePointer } from "gantt-schedule-timeline-calendar/dist
 import { Plugin as HighlightWeekends } from "gantt-schedule-timeline-calendar/dist/plugins/highlight-weekends.esm.min.js";
 
 import "gantt-schedule-timeline-calendar/dist/style.css";
-import { TimesheetEmployee } from "../../../utils/format-data";
+
 import "../../../styles/components/Timeline/Timeline.scss";
 import { itemSlot, mainOuterSlot, rowSlot, toggleSlot } from "./slots";
 import { updateRowClassAction } from "./actions";
 import { Items, Config, Rows } from "gantt-schedule-timeline-calendar";
+import { EmployeeDto } from "../../../types/services/employees.types";
 
 //@ts-ignore
 GSTC.api.dayjs.extend(weekOfYear);
@@ -22,7 +23,7 @@ let gstc: any, state: any;
 
 // helper functions
 
-function generateRows(employees: TimesheetEmployee[]) {
+function generateRows(employees: EmployeeDto[]) {
   /**
    * @type { import("gantt-schedule-timeline-calendar").Rows }
    */
@@ -44,7 +45,7 @@ function generateRows(employees: TimesheetEmployee[]) {
   return rows;
 }
 
-function generateItems(employees: TimesheetEmployee[]) {
+function generateItems(employees: EmployeeDto[]) {
   const items: Items = {};
 
   employees.forEach((employee) => {
@@ -113,7 +114,7 @@ function initializeGSTC({
   employees,
 }: {
   element: HTMLDivElement;
-  employees: TimesheetEmployee[];
+  employees: EmployeeDto[];
 }) {
   const config = {
     licenseKey:
@@ -184,7 +185,7 @@ function initializeGSTC({
 }
 
 type TimelineProps = {
-  employees: TimesheetEmployee[] | null;
+  employees: EmployeeDto[] | null;
 };
 
 function Timeline({ employees }: TimelineProps) {

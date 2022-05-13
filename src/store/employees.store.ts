@@ -22,7 +22,7 @@ class EmployeeStore {
     );
   }
   getSummary(id: string, year: number, month: number) {
-    return useQuery(["employeeById", id], () =>
+    return useQuery(["employeeSummaryById", id], () =>
       employeeService.fetchEmployeeSummary(id, year, month)
     );
   }

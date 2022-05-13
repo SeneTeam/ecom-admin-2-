@@ -1,19 +1,10 @@
 import { formatTimesheet } from "./../../../utils/format-data";
-import dayjs from "dayjs";
 
-import {
-  ChartTimeDate,
-  Component,
-  DataChartTime,
-  Items,
-  RenderFunction,
-  Row,
-} from "gantt-schedule-timeline-calendar";
+import { DataChartTime, Items, Row } from "gantt-schedule-timeline-calendar";
 import { Api } from "gantt-schedule-timeline-calendar/dist/api/api";
 import {
   htmlResult,
   Item,
-  ItemTime,
   RowData,
   Vido,
 } from "gantt-schedule-timeline-calendar/dist/gstc.wasm.esm.min";
@@ -62,8 +53,10 @@ export const rowSlot = (vido: Vido, props: { row: Row }) => {
           style="background-image: url(${props.row.profileUrl})"
         ></div>
         <div class="text-start ms-2 timesheet-row-profile">
-          <h6 class="mb-0 lh-base">${props.row.name}</h6>
-          <p class="mb-0 lh-base">${props.row.role}</p>
+          <h6 class="mb-0 lh-base">
+            ${props.row.firstName} ${props.row.lastName}
+          </h6>
+          <p class="mb-0 lh-base">${props.row.employeeRole.name}</p>
         </div>
       </div>
       <div class="timesheet-row-summary p-2 justify-content-between">
