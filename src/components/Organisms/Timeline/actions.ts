@@ -1,8 +1,8 @@
-import { getEmployeeSummary } from "./../../../services/employees/employees.service";
 import {
   ActionData,
   ActionFunctionResult,
 } from "gantt-schedule-timeline-calendar/dist/gstc.wasm.esm.min";
+import { employeeService } from "../../../services/employees/employee.service";
 
 async function updateRowClass(el: HTMLElement, data: ActionData) {
   if (data.row.expanded) {
@@ -31,11 +31,12 @@ async function updateRowClass(el: HTMLElement, data: ActionData) {
 
       const year = data.api.time.date(currentTime).year();
 
-      const response = await getEmployeeSummary({
-        id: data.row.id.replace("gstcid-", ""),
+      const { data: response } = await employeeService.fetchEmployeeSummary(
+        data.row.id.replace("gstcid-", ""),
         month,
-        year,
-      });
+        year
+      );
+
       data.state.update(
         `config.list.rows.${[data.rowData.children[0]]}.totDays`,
         `${response.totDays}h`
