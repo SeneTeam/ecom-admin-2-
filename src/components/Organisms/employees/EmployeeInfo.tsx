@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import { EmployeeDto } from '../../../types/services/employees.types';
-import Button from '../../Molecules/Button/Button';
-import Details from '../../Molecules/custom/Details';
-import SuccessModal from '../Modals/SuccessModal';
-import AddNewEmployeeModal from './AddNewEmployeeModal';
+import { EmployeeDto } from "../../../types/services/employees.types";
+import Button from "../../Molecules/Button/Button";
+import Details from "../../Molecules/custom/Details";
+import SuccessModal from "../Modals/SuccessModal";
+import AddNewEmployeeModal from "./AddNewEmployeeModal";
 
 export default function EmployeeInfo(props: { employee: EmployeeDto }) {
   const [rightModalShow, setRightModalShow] = useState(false);
@@ -18,49 +18,61 @@ export default function EmployeeInfo(props: { employee: EmployeeDto }) {
     otherInfo = {},
     contactInfo = {};
 
-  console.log(props.employee);
+  console.log("", props.employee);
 
   if (props.employee) {
     basicInfo = {
-      'Grafiko Nr.': props.employee?.seqNumber,
-      'Sutarties Nr.': props.employee?.contractNumber,
-      'Sodros Nr.': props.employee.seqNumber,
-      'Šalis': props.employee.nationality.name,
-      'Asmens kodas': props.employee?.socialSecurityNumber,
-      'Darbuotojas': props.employee.firstName.toUpperCase() + ' ' + props.employee.lastName.toUpperCase(),
-      'Statusas': props.employee.isActive ? 'Active' : 'InActive',
+      "Grafiko Nr.": props.employee?.seqNumber,
+      "Sutarties Nr.": props.employee?.contractNumber,
+      "Sodros Nr.": props.employee.seqNumber,
+      Šalis: props.employee.nationality.name,
+      "Asmens kodas": props.employee?.socialSecurityNumber,
+      Darbuotojas:
+        props.employee.firstName.toUpperCase() +
+        " " +
+        props.employee.lastName.toUpperCase(),
+      Statusas: props.employee.isActive ? "Active" : "InActive",
     };
 
     workingCondition = {
-      'Pareigos': props.employee.employeeRole?.name,
-      'Įdarbinimo pradžia': props.employee.regDate.split('T')[0],
-      'Pirmoji darbo diena': props.employee.startDate.split('T')[0],
-      'Įdarbinimo pabaiga': props.employee.endDate.split('T')[0],
-      'Sutarties tipas': props.employee.employmentTerm.name,
-      'Etatas': props.employee.employmentType.name,
-      'Darbo savaitės trukmė': props.employee.workingWeek ? props.employee.workingWeek.name : 'Nėra duomenų',
-      'Atlyginimas': `${props.employee.salary} €`
+      Pareigos: props.employee.employeeRole?.name,
+      "Įdarbinimo pradžia": props.employee.regDate.split("T")[0],
+      "Pirmoji darbo diena": props.employee.startDate.split("T")[0],
+      "Įdarbinimo pabaiga": props.employee.endDate.split("T")[0],
+      "Sutarties tipas": props.employee.employmentTerm.name,
+      Etatas: props.employee.employmentType.name,
+      "Darbo savaitės trukmė": props.employee.workingWeek
+        ? props.employee.workingWeek.name
+        : "Nėra duomenų",
+      Atlyginimas: `${props.employee.salary} €`,
     };
 
     residenceInfo = {
-      'Adresas': `${props.employee.address}, ${props.employee.postalCode} ${props.employee.city}, ${props.employee.country}`,
+      Adresas: `${props.employee.address}, ${props.employee.postalCode} ${props.employee.city}, ${props.employee.country}`,
     };
 
     drivingLicense = {
       // Vairuotojo pažymėjimas
-      'Numeris': 'Nėra duomenų',
-      'Kategorija': props.employee.drivingLicense.name,
+      Numeris: "Nėra duomenų",
+      Kategorija: props.employee.drivingLicense.name,
     };
 
-    {Object.values(props.employee.clothings).map((key) => clothingSize = Object.assign({}, clothingSize, { [key.type.name] : key.size }) )}
+    {
+      Object.values(props.employee.clothings).map(
+        (key) =>
+          (clothingSize = Object.assign({}, clothingSize, {
+            [key.type.name]: key.size,
+          }))
+      );
+    }
 
     otherInfo = {
-      'Informacija': props.employee.otherInfo,
-    }
-    
+      Informacija: props.employee.otherInfo,
+    };
+
     contactInfo = {
-      'Telefonas': props.employee.phone,
-      'El. paštas': props.employee.email,
+      Telefonas: props.employee.phone,
+      "El. paštas": props.employee.email,
     };
   }
 
@@ -87,7 +99,8 @@ export default function EmployeeInfo(props: { employee: EmployeeDto }) {
             <div className="col-3 mr-3">
               <Button
                 onClick={() => setRightModalShow(true)}
-                className="text-capitalize b-radius">
+                className="text-capitalize b-radius"
+              >
                 Atnaujinti duomenis
               </Button>
             </div>
@@ -107,7 +120,7 @@ export default function EmployeeInfo(props: { employee: EmployeeDto }) {
             <div className="col-12 col-md-6">
               <Details title="Duomenys" data={basicInfo} />
             </div>
-            
+
             <div className="col-12 col-md-6">
               <Details title="Darbo sąlygos" data={workingCondition} />
             </div>
@@ -125,9 +138,12 @@ export default function EmployeeInfo(props: { employee: EmployeeDto }) {
             </div>
 
             <div className="col-12 col-md-6">
-              <Details title="Avalynės ir drabužių dydžiai" data={clothingSize} />
+              <Details
+                title="Avalynės ir drabužių dydžiai"
+                data={clothingSize}
+              />
             </div>
-            
+
             <div className="col-12 col-md-6">
               <Details title="Kita info" data={otherInfo} />
             </div>
@@ -136,7 +152,7 @@ export default function EmployeeInfo(props: { employee: EmployeeDto }) {
           <AddNewEmployeeModal
             handleSuccess={() => setisSuccessModalOpen(true)}
             show={rightModalShow}
-            className={'side-modal'}
+            className={"side-modal"}
             setShow={setRightModalShow}
             onHide={() => setRightModalShow(false)}
             employeeId={props.employee.id}

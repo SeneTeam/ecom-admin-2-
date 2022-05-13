@@ -31,9 +31,11 @@ const App = () => {
 
           {/* dashboard */}
           <Route path="dashboard" element={<MainLayout />}>
-            <Route path="employees" element={<Employees />} />
-            <Route path="employees/:id" element={<EmployeeDetails />} />
-            <Route path="timesheets" element={<Timesheets />} />
+            <Route path="employees">
+              <Route index element={<Employees />}></Route>
+              <Route path=":id" element={<EmployeeDetails />} />
+              <Route path="timesheet" element={<Timesheets />} />
+            </Route>
           </Route>
           <Route path="/usage" element={<ShowCase />} />
           <Route path="*" element={<PageNotFound />} />
