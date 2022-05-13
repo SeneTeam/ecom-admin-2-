@@ -1,3 +1,6 @@
+.text-xxs{
+    font-size: 10px;
+}
 .text-xs{
     font-size: 12px;
 }
@@ -47,4 +50,8 @@
 }
 .font-black {
     font-weight: 900;
+}
+
+::placeholder{
+    font-size: 12px !important;
 }

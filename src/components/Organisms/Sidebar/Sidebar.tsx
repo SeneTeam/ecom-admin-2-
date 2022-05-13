@@ -1,32 +1,39 @@
-import React, { useState } from "react";
-import "../../../styles/components/Sidebar/Sidebar.scss";
-import { mockData } from "./data";
+import '../../../styles/components/Organisms/Sidebar.scss';
 
-const Sidebar = () => {
-  const [selected, setSelected] = useState("");
-  const [openItem, setOpenItem] = useState("");
+import React, {useState} from 'react';
 
-  return (
-    <div className="sidebar flex-shrink-0 bg-white">
-      <span>logo</span>
-      {mockData.map((data) => (
-        <div key={data.label}>
-          <div
-            className="d-flex first-item p-4 text-white border-top border-white fw-bold"
-            onClick={() => {
-              if (openItem === data.label) {
-                setOpenItem("");
-              } else if (data.children && data.children.length > 0) {
-                setOpenItem(data.label);
-              }
-            }}
-          >
-            <span>{data.label}</span>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-};
+import ListItem from '../../Molecules/Sidebar/ListItem';
+import useAuthenticator from '../../../hooks/useAuthenticator';
+import { IRole } from '../../../types/services/user.types';
+import {containsAll, getPriorityRole, getRoleSidebar} from '../../../utils/utility';
+import { ISidebar } from '../../../types/services/sidebar.types';
 
-export default Sidebar;
+export default function Sidebar() {
+    const {user} = useAuthenticator();
+    const [resolved, setResolved] = useState(false);
+    let sidebarItems: ISidebar[] = [];
+    if (user) {
+       const role: IRole = getPriorityRole(user.currentUserRoles);
+       console.log(role);
+       sidebarItems = getRoleSidebar(role);
+       console.log(sidebarItems);
+    //    setResolved(true);
+    }
+
+    return (
+        <React.Fragment>
+            {(user && sidebarItems.length > 0) ? <div className={'container bg-sidebar p-0'}>
+                <div className="sidebar-header d-flex">
+                    <img src={'/assets/images/sass-logo-black.png'} width={185} alt="Logo" />
+                </div>
+                <div className="sidebar-list-items border">
+                    {sidebarItems.map((item) => (
+                            <ListItem key={item.id} item={item} />  
+                    ))}
+                </div>
+            </div>
+            : null}
+            
+        </React.Fragment>
+    )
+}

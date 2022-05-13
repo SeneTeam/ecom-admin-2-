@@ -1,19 +1,32 @@
 @import '../../../main';
 
 input {
-    background-color: color(light-gray);
     border: none;
     width: 100%;
-    font-size: 11px !important;
+    font-size: 12px !important;
     font-weight: 400;
-    color: color(semi-black);
-    padding: 0.5rem 01rem;
+    // color: color(semi-black);
+    padding: 0.65rem 01rem;
+
+    &:focus-visible {
+        outline: none;
+        // border:1px solid rgb(100, 97, 97);
+        background-color: white;
+        border-bottom: 1px solid hsl(0, 10%, 90%);
+    }
+}
+
+
+
+
+.bg-styles {
     border-radius: 2px;
     outline: 1px solid color(light-gray);
+    background-color: color(light-gray);
 
+    &:focus-visible {
+        outline: 1px solid hsl(0, 10%, 90%) !important;
+    }
+
+    
 }
-
-input:focus-visible {
-    outline: 1px solid #e9e4e4;
-}
-

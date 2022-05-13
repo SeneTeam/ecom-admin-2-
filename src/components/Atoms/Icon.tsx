@@ -5,6 +5,7 @@ import { IconNames } from '../../types/props';
 interface IconProps {
   name: IconNames;
   className?: string;
+  styles?: any;
   height?: number;
   width?: number;
   size?: number;
@@ -16,8 +17,19 @@ export default function Icon({
   name,
   size = 24,
   height = size,
+  className = '',
+  styles = {},
   width = size,
   alt = name + ' icon',
 }: IconProps) {
-  return <img src={`/icons/${name}.svg`} alt={alt} width={width} height={height} />;
+  return (
+    <img
+      style={styles}
+      className={className}
+      src={`/icons/${name}.svg`}
+      alt={alt}
+      width={width}
+      height={height}
+    />
+  );
 }

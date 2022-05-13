@@ -1,12 +1,19 @@
-import React from 'react';
+import '../../styles/components/Organisms/Table.scss';
+
+import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 
 import { ValueType } from '../../types';
-import { TableActionsType } from '../../types/props';
+import { filterType, TableActionsType } from '../../types/props';
+import Dropdown from '../Atoms/custom/Dropdown';
+import Heading from '../Atoms/Heading';
 import Icon from '../Atoms/Icon';
+import Button from '../Molecules/Button/Button';
+import Filter from '../Molecules/custom/Filter';
 import Pagination from '../Molecules/custom/Pagination';
 
 const showEntriesOptions = [
+  { value: '5', label: '5' },
   { value: '10', label: '10' },
   { value: '25', label: '25' },
   { value: '50', label: '50' },
@@ -19,7 +26,7 @@ interface TableProps<T> {
   hide?: (keyof T)[];
   showNumbering?: boolean;
   actions?: TableActionsType<T>[];
-  handleClickRow?: () => void;
+  handleClickRow?: (_row: any) => void;
   statusColumn?: string;
 
   //pagination
@@ -28,6 +35,11 @@ interface TableProps<T> {
   currentPage?: number;
   onChangePage: (_page: number) => void;
   onChangePageSize?: (_size: number) => void;
+
+  // add new item button
+  onClickAddNewButton?: () => void;
+  addNewButtonText?: string;
+  showAddNewButton?: boolean;
 }
 
 export default function Table<T>({
@@ -37,85 +49,276 @@ export default function Table<T>({
   showNumbering = true,
   actions,
   handleClickRow,
-
   //pagination
-  rowsPerPage = 10,
-  totalPages = 1,
+  rowsPerPage = 5,
+  // totalPages = 1,
   currentPage = 0,
   onChangePage,
   onChangePageSize,
+  // add new button
+  onClickAddNewButton,
+  addNewButtonText = 'Pridėti naują',
+  showAddNewButton = true,
 }: //   ,
-TableProps<T>) {
-  function handleCountSelect(e: ValueType) {
+  TableProps<T>) {
+  const [_currentPage, setcurrentPage] = useState(currentPage);
+  const [_rowsPerPage, setrowsPerPage] = useState(rowsPerPage);
+
+  const [rowsToDisplay, setrowsToDisplay] = useState<T[]>([]);
+  const [rowsAvailable, setrowsAvailable] = useState(data);
+
+  const [num, setNum] = useState(0);
+
+  //filter data using column, filter and filterType
+  const filterData = (column: keyof T, filterType: filterType, searchValue: string) => {
+    if (column?.toString().length > 0 && searchValue.length > 0) {
+      const filteredData = data.filter((item) => {
+        const currentItem = (item[column] as unknown as string).toLowerCase();
+        searchValue = searchValue.toLowerCase();
+        if (column) {
+          if (filterType === 'equals') {
+            return currentItem === searchValue;
+          } else if (filterType === 'contains') {
+            return currentItem.includes(searchValue);
+          } else if (filterType === 'startsWith') {
+            return currentItem.startsWith(searchValue);
+          } else if (filterType === 'endsWith') {
+            return currentItem.endsWith(searchValue);
+          }
+        } else {
+          return true;
+        }
+      });
+      setrowsAvailable(filteredData);
+    } else {
+      if (rowsAvailable.length !== data.length) {
+        setrowsAvailable(data);
+      }
+    }
+  };
+
+  const sortTable = (n: number) => {
+    let table: any, sort: any, rows: any, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+    setNum(n);
+    console.log('clicked', n, num)
+    if (num !== n) {
+      let oldsort: any = document.getElementById("sort" + n);
+      oldsort.classList.add('sorteddesc')
+      sort = document.getElementById("sort" + num);
+      sort.classList.remove('sorteddesc')
+      sort.classList.remove('sortedasc')
+      table = document.getElementById("myTable");
+      switching = true;
+      dir = "asc";
+      console.log('direction', dir, switching)
+      while (switching) {
+        switching = false;
+        rows = table.rows;
+        for (i = 1; i < (rows.length - 1); i++) {
+          shouldSwitch = false;
+          x = rows[i].getElementsByTagName("TD")[n];
+          y = rows[i + 1].getElementsByTagName("TD")[n];
+          if (dir == "asc") {
+            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+              oldsort.classList.remove('sortedasc')
+              oldsort.classList.add('sorteddesc')
+              shouldSwitch = true;
+              break;
+            }
+          } else if (dir == "desc") {
+            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+
+              oldsort.classList.remove('sorteddesc')
+              oldsort.classList.add('sortedasc')
+              shouldSwitch = true;
+              break;
+            }
+          }
+        }
+        if (shouldSwitch) {
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+          switching = true;
+          switchcount++;
+        } else {
+          if (switchcount == 0 && dir == "asc") {
+            dir = "desc";
+            switching = true;
+          }
+        }
+      }
+
+    } else {
+      table = document.getElementById("myTable");
+      sort = document.getElementById("sort" + n);
+      sort.classList.add('sorteddesc')
+      switching = true;
+      dir = "asc";
+      while (switching) {
+        switching = false;
+        rows = table.rows;
+        for (i = 1; i < (rows.length - 1); i++) {
+          shouldSwitch = false;
+          x = rows[i].getElementsByTagName("TD")[n];
+          y = rows[i + 1].getElementsByTagName("TD")[n];
+          if (dir == "asc") {
+            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+              sort.classList.remove('sortedasc')
+              sort.classList.add('sorteddesc')
+              shouldSwitch = true;
+              break;
+            }
+          } else if (dir == "desc") {
+            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+
+              sort.classList.remove('sorteddesc')
+              sort.classList.add('sortedasc')
+              shouldSwitch = true;
+              break;
+            }
+          }
+        }
+        if (shouldSwitch) {
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+          switching = true;
+          switchcount++;
+        } else {
+          if (switchcount == 0 && dir == "asc") {
+            dir = "desc";
+            switching = true;
+          }
+        }
+      }
+    }
+
+  }
+
+  function handleChangeRowsPerPage(e: ValueType) {
+    setcurrentPage(0);
+    setrowsPerPage(Number(e.value));
     if (onChangePageSize) onChangePageSize(parseInt(e.value + ''));
   }
 
-  return (
-    <div className="border rounded">
-      <table className="table table-responsive my-0">
-        <tbody>
-          <tr className="rounded bg-light">
-            {showNumbering && <th>#</th>}
-            {Object.keys(data[0])
-              .filter((key) => !hide.includes(key as keyof T))
-              .map((key) => (
-                <td key={key} className="text-capitalize font-bold px-2">
-                  {key}
-                </td>
-              ))}
-            {actions && <th>Actions</th>}
-          </tr>
-          {/* Table body */}
-          {data.map((row, index) => (
-            <tr key={index} onClick={() => handleClickRow && handleClickRow()}>
-              {showNumbering && <td>{index + 1}</td>}
-              {Object.keys(row)
-                .filter((key) => !hide.includes(key as keyof T))
-                .map((key) => (
-                  <td key={key} className="text-sm px-2">
-                    {/* @ts-ignore */}
-                    {row[key]}
-                  </td>
-                ))}
-              {actions && (
-                <td className="px-2">
-                  <div className="dropdown">
-                    <button className="btn w-auto px-1 outline-none">
-                      <Icon name={'more'} size={24} />
-                    </button>
-                  </div>
+  function handlePageChange(e: number) {
+    setcurrentPage(e);
+    if (onChangePage) onChangePage(e);
+  }
 
-                  {/* {actions.map((action) => (
-                    <div key={action.name}>
-                      <button
-                        className="btn btn-sm btn-primary"
-                        onClick={() => action.handleAction(row)}>
-                        {action.name}
-                      </button>
-                    </div>
-                  ))} */}
-                </td>
-              )}
+  useEffect(() => {
+    setrowsAvailable(data);
+  }, [data]);
+
+  useEffect(() => {
+    const startingPoint = _currentPage * _rowsPerPage;
+    setrowsToDisplay(rowsAvailable.slice(startingPoint, startingPoint + _rowsPerPage));
+  }, [_currentPage, _rowsPerPage, rowsAvailable]);
+
+  return (
+    <div>
+      {showAddNewButton && (
+        <div className="page-head">
+          <Heading fontSize="md" fontWeight="bold">
+            {addNewButtonText}
+            <button className="btn w-auto" onClick={onClickAddNewButton}>
+              <Icon name={'add'} styles={{ marginLeft: '5px' }} size={35} />
+            </button>
+          </Heading>
+        </div>
+      )}
+      <Filter handleFilter={filterData} data={data[0]} />
+      <div className="border rounded">
+        <table className="table table-responsive my-0" id="myTable">
+          <tbody>
+            <tr className="rounded bg-light">
+              {showNumbering && <th>#</th>}
+              {data[0] &&
+                Object.keys(data[0])
+                  .filter((key) => !hide.includes(key as keyof T))
+                  .map((mapdata, key) => (
+                    <td key={key} id={"sort" + key} className="text-capitalize font-bold px-2 text-sm headerclick" onClick={() => sortTable(key)}>
+                      {mapdata}
+                    </td>
+                  ))}
+              {actions && <th className="text-center text-xs">Red.</th>}
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="d-flex justify-content-between my-2">
+            {/* Table body */}
+            {rowsToDisplay.map((row, index) => (
+              <tr
+                key={index}
+                className="contentrows"
+                onClick={() => handleClickRow && handleClickRow(row)}>
+                {showNumbering && <td className="text-xs">{index + 1}</td>}
+                {Object.keys(row)
+                  .filter((key) => !hide.includes(key as keyof T))
+                  .map((key) => (
+                    <td key={key} className="text-xs px-2">
+                      {/* @ts-ignore */}
+                      {typeof row[key] !== 'boolean' ? (
+                        row[key]
+                      ) : (
+                        <span>
+                          <span
+                            className={
+                              row[key] ? 'circle-success' : 'circle-fail'
+                            }></span>
+                          <span>Active</span>
+                        </span>
+                      )}
+                    </td>
+                  ))}
+                {actions && (
+                  <td className="">
+                    <Dropdown
+                      header={
+                        <Button className="no-styles">
+                          <Icon name={'more'} size={24} styles={{ marginTop: '-9px' }} />
+                        </Button>
+                      }>
+                      {actions.map((action) => (
+                        <div
+                          key={action.name}
+                          className="w-100 bg-white shadow p-0"
+                          onClick={() => action.handleAction(row)}>
+                          <button className="btn col-3 w-100 border-bottom drop-content-btn text-capitalize p-0">
+                            {/* <Icon name={action.icon} size={13} /> */}
+                            <span className="px-2 text-xs">
+                              {action.name.toLowerCase()}
+                            </span>
+                          </button>
+                        </div>
+                      ))}
+                    </Dropdown>
+                  </td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className=" my-2">
         <div className="d-flex align-items-center py-2">
-          <span className="px-3">Rodyti</span>
+          <span className="px-3 text-xs">Rodyti</span>
           <Select
+            className="text-xs"
             name="rowstoDisplay"
-            value={showEntriesOptions.find((option) => option.value === rowsPerPage + '')}
+            value={showEntriesOptions.find(
+              (option) => option.value === _rowsPerPage + '',
+            )}
+            styles={{
+              menu: (provided) => ({
+                ...provided,
+                padding: '0px 0px 60px 0px',
+              }),
+            }}
             // @ts-ignore
-            onChange={handleCountSelect}
+            onChange={handleChangeRowsPerPage}
             options={showEntriesOptions}
           />
         </div>
         <Pagination
           totalElements={data.length}
-          paginate={onChangePage}
-          currentPage={currentPage}
-          totalPages={totalPages}
+          paginate={handlePageChange}
+          currentPage={_currentPage}
+          totalPages={Math.ceil(data.length / _rowsPerPage)}
         />
       </div>
     </div>

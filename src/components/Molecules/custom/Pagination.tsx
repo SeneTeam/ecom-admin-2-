@@ -1,3 +1,5 @@
+import '../../../styles/components/Molecules/custom/Pagination.scss';
+
 import React from 'react';
 
 import Indicator from '../../Atoms/custom/Indicator';
@@ -10,16 +12,30 @@ type PaginationProps = {
   rowsPerPage?: number;
   totalPages?: number;
 };
-const Pagination = ({ totalPages = 1, paginate, currentPage = 0 }: PaginationProps) => {
-  const pageNumbers = [1];
+const Pagination = ({
+  totalPages = 1,
+  paginate,
+  currentPage = 0,
+  totalElements,
+}: PaginationProps) => {
+  let pageNumbers = [1];
 
   for (let i = 1; i < totalPages; i++) {
     pageNumbers.push(i + 1);
   }
 
-  return totalPages > 1 ? (
-    <div className="py-2">
-      <div className="px-0 d-flex justify-content-end align-items-center shadow-sm bg-white rounded py-1">
+  const getPageNumbers = () => {
+    if (totalPages <= 5) return pageNumbers;
+    if (currentPage <= 2) return pageNumbers.slice(0, 5);
+    if (currentPage >= totalPages - 2) return pageNumbers.slice(totalPages - 5);
+    return pageNumbers.slice(currentPage - 2, currentPage + 3);
+  };
+
+  console.log(getPageNumbers());
+
+  return totalPages >= 1 ? (
+    <div className="py-2 d-flex justify-content-between ">
+      <div className="px-0 d-flex justify-content-start align-items-center rounded py-1">
         <div className="mr-2">
           <button
             className="btn btn-sm"
@@ -30,7 +46,7 @@ const Pagination = ({ totalPages = 1, paginate, currentPage = 0 }: PaginationPro
             <Icon name="arrow-left" size={16} />
           </button>
         </div>
-        {pageNumbers.map((number) => (
+        {getPageNumbers().map((number) => (
           <div className="pr-1" key={number}>
             <Indicator
               isCircular={false}
@@ -50,6 +66,11 @@ const Pagination = ({ totalPages = 1, paginate, currentPage = 0 }: PaginationPro
             <Icon name="arrow-right2" size={16} />
           </button>
         </div>
+      </div>
+      <div className="">
+        <p className="pagination-txt mb-0">
+          Puslapis {currentPage + 1} iš {totalPages} / Viso {totalElements} rezultatų
+        </p>
       </div>
     </div>
   ) : (

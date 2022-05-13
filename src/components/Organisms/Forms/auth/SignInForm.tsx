@@ -1,59 +1,61 @@
-import React, { FormEvent, useState } from "react";
-// import { useNavigate } from 'react-router-dom';
+import React, { FormEvent, useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { Link, useNavigate } from 'react-router-dom';
 
-import { signin } from "../../../../services/auth/auth.service";
-import { ValueType } from "../../../../types";
-import { LoginInfo } from "../../../../types/services/auth.types";
-import Checkbox from "../../../Atoms/Form/Checkbox";
-import Input from "../../../Atoms/Form/Input";
-import Button from "../../../Molecules/Button/Button";
+import { authStore } from '../../../../store/auth.store';
+import { ValueType } from '../../../../types';
+import { LoginDto } from '../../../../types/services/auth.types';
+import Checkbox from '../../../Atoms/Form/Checkbox';
+import Input from '../../../Atoms/Form/Input';
+import Button from '../../../Molecules/Button/Button';
 
 export default function SignInForm() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  const [details, setDetails] = useState<LoginInfo>({
-    username: "",
-    password: "",
+  const [details, setDetails] = useState<LoginDto>({
+    username: '',
+    password: '',
   });
 
-  const [error, setError] = useState<string>("");
-
   const handleChange = (e: ValueType) => {
-    console.log(e.name);
     setDetails((details) => ({
       ...details,
       [e.name]: e.value,
     }));
   };
 
+  const { mutateAsync, isLoading } = authStore.login();
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const res = await signin(details);
-    if (res.response?.data.status == 401) {
-      setError("Invalid credentials");
-    } else {
-      // navigate("/employees");
-      localStorage.setItem("token", res.token);
-    }
+    await mutateAsync(details, {
+      async onSuccess(data) {
+        localStorage.setItem('jwt_info', JSON.stringify(data));
+        toast.success('Login successful', { duration: 1200 });
+        navigate('/dashboard/employees');
+      },
+      onError(__error) {
+        toast.error('Authentication failed', { duration: 3000 });
+      },
+    });
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <p className="text-danger text-center"> {error ? error : null}</p>
       <div className="input-control mb-3">
         <Input
-          placeholder={"Username"}
-          name={"username"}
+          placeholder={'Username'}
+          name={'username'}
           handleChange={handleChange}
           value={details.username}
         />
       </div>
       <div className="input-control mb-3">
         <Input
-          placeholder={"Password"}
-          name={"password"}
-          type={"password"}
+          placeholder={'Password'}
+          name={'password'}
+          type={'password'}
           handleChange={handleChange}
           value={details.password}
         />
@@ -63,13 +65,15 @@ export default function SignInForm() {
           <Checkbox />
         </div>
         <div className="meta-area col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
-          <a href="/" className="f-password">
-            Pamiršote slaptažodį?
-          </a>
+          <Link to={'/forgot-password'}>
+            <span className="f-password">Pamiršote slaptažodį?</span>
+          </Link>
         </div>
       </div>
       <div className="mb-4">
-        <Button type={"submit"}>Prisijungti</Button>
+        <Button type={'submit'} disabled={isLoading}>
+          Prisijungti
+        </Button>
       </div>
     </form>
   );

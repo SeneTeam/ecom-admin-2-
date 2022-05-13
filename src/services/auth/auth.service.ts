@@ -1,15 +1,36 @@
-import axios from 'axios';
-import { LoginInfo } from '../../types/services/auth.types';
+import { AxiosResponse } from 'axios';
 
-const ENDPOINT = import.meta.env.VITE_API_URL;
+import { customAxios } from '../../plugins/axios';
+import {
+  ForgotPasswordInfo,
+  IChangePassword,
+  IResetPassword,
+  LoginDto,
+  LoginRes,
+} from '../../types/services/auth.types';
 
-export const signin = (data: LoginInfo) => {
-  const url = `${ENDPOINT}/api/authenticate/login`;
-  return axios.post(url, data)
-    .then(res => {
-        console.log(res);
-      return res.data
-    }).catch((err) => {
-      return err
-    })
-};
+class AuthenticatorService {
+  public async login(loginInfo: LoginDto): Promise<AxiosResponse<LoginRes>> {
+    return await customAxios.post('/authenticate/login', loginInfo);
+  }
+
+  public async logout() {
+    return await customAxios.get('/authenticate/logout');
+  }
+
+  public async changePassword(changePassword: IChangePassword) {
+    return await customAxios.post('/authenticate/change-password', changePassword);
+  }
+
+  public async forgotPassword(initiateResetPassword: ForgotPasswordInfo) {
+    return await customAxios.post(
+      '/authenticate/reset-password-token',
+      initiateResetPassword,
+    );
+  }
+  public async resetPassword(resetPassword: IResetPassword) {
+    return await customAxios.post('/authenticate/reset-password', resetPassword);
+  }
+}
+
+export const authService = new AuthenticatorService();

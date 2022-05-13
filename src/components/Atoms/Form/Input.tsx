@@ -1,38 +1,53 @@
-import React, {useState, useEffect} from 'react';
 import '../../../styles/components/Atoms/Form/Input.scss';
-import {InputProps} from '../../../types/props';
 
-export default function Input<T>(
-  { placeholder = '', padding = 'px-4', type, readonly = false, required = true, value = '', name, min = 0, max,
-   full, fcolor = 'primary', bcolor = 'tertiary', pcolor = 'txt-secondary', width, handleChange = () => {},
-    className = '', ...attrs}: InputProps<T>) {
+import React, { useEffect, useState } from 'react';
 
-      const [_value, setValue] = useState<string>('');
+import { InputProps } from '../../../types/props';
 
-      useEffect(() => setValue(value?.toString()), [value]);
-    
-      function handleOnChange(e: any) {
-        setValue(e.target.value);
-        if (handleChange && _value !== e.target.value)
-          handleChange({ name, value: e.target.value, event: e });
-      }
+export default function Input<T>({
+  placeholder = '',
+  type,
+  readonly = false,
+  required = true,
+  value = '',
+  name,
+  className = '',
+  min = 0,
+  max,
+  inputColor = '#212529',
+  bgStyles = true,
+  handleChange = () => {},
+  ...props
+}: // ...attrs
+InputProps<T>) {
+  const [_value, setValue] = useState<string>('');
 
-    return (
-        <input
-          {...attrs}
-          placeholder={placeholder}
-          name={name}
-          type={type}
-          value={value}
-          spellCheck="true"
-          readOnly={readonly}
-          required={required}
-          min={min}
-          max={max}
-          autoComplete="off"
-          className={``}
-          /* @ts-ignore */
-          onChange={handleOnChange}
-        />
-    )
+  useEffect(() => setValue(value?.toString()), [value]);
+
+  function handleOnChange(e: any) {
+    setValue(e.target.value);
+    if (handleChange && _value !== e.target.value)
+      handleChange({ name, value: e.target.value, event: e });
+  }
+
+  return (
+    <input
+      // {...attrs} 
+      placeholder={placeholder}
+      name={name}
+      type={type}
+      value={value}
+      spellCheck="true"
+      readOnly={readonly}
+      required={required}
+      min={min}
+      max={max}
+      style={{ color: inputColor }}
+      autoComplete="off"
+      className={`${bgStyles ? 'bg-styles' : ''} ${className}`}
+      /* @ts-ignore */
+      onChange={handleOnChange}
+      {...props}
+    />
+  );
 }
