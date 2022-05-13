@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useMemo, useLayoutEffect } from "react";
-import Sidebar from "../../components/Organisms/Sidebar";
 import Timeline from "../../components/Organisms/Timeline";
 import { getEmployees } from "../../services/employees/employees.service";
 import {
@@ -7,10 +6,8 @@ import {
   TimesheetEmployee,
 } from "../../utils/format-data";
 import "../../styles/pages/Timesheets.scss";
-import Pagination from "../../components/Organisms/Timeline/Pagination";
 
 const Timesheets = () => {
-  const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemPerPage] = useState(10);
 
   const [employeesData, setEmployeesData] = useState<
@@ -45,17 +42,10 @@ const Timesheets = () => {
 
   return (
     <div className="timesheet-page d-flex w-100">
-      <Sidebar />
       <div className="timesheet-page-board">
         {filteredEmployeesData && filteredEmployeesData.length > 0 && (
           <>
             <Timeline employees={filteredEmployeesData} />
-            <Pagination
-              totalResults={employeesData?.length!}
-              currentPage={currentPage}
-              itemsPerPage={itemsPerPage}
-              changePage={(page: number) => setItemPerPage(page)}
-            />
           </>
         )}
       </div>

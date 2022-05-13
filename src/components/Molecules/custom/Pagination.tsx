@@ -1,9 +1,9 @@
-import '../../../styles/components/Molecules/custom/Pagination.scss';
+import "../../../styles/components/Molecules/custom/Pagination.scss";
 
-import React from 'react';
+import React from "react";
 
-import Indicator from '../../Atoms/custom/Indicator';
-import Icon from '../../Atoms/Icon';
+import Indicator from "../../Atoms/custom/Indicator";
+import Icon from "../../Atoms/Icon";
 
 type PaginationProps = {
   totalElements: number;
@@ -31,7 +31,7 @@ const Pagination = ({
     return pageNumbers.slice(currentPage - 2, currentPage + 3);
   };
 
-  console.log(getPageNumbers());
+  console.log("", getPageNumbers());
 
   return totalPages >= 1 ? (
     <div className="py-2 d-flex justify-content-between ">
@@ -42,7 +42,8 @@ const Pagination = ({
             disabled={currentPage === 0}
             onClick={() => {
               paginate(currentPage - 1);
-            }}>
+            }}
+          >
             <Icon name="arrow-left" size={16} />
           </button>
         </div>
@@ -51,7 +52,8 @@ const Pagination = ({
             <Indicator
               isCircular={false}
               isActive={currentPage + 1 === number}
-              handleClick={() => paginate(number - 1)}>
+              handleClick={() => paginate(number - 1)}
+            >
               {number}
             </Indicator>
           </div>
@@ -62,14 +64,16 @@ const Pagination = ({
             className="btn btn-sm"
             onClick={() => {
               paginate(currentPage + 1);
-            }}>
+            }}
+          >
             <Icon name="arrow-right2" size={16} />
           </button>
         </div>
       </div>
       <div className="">
         <p className="pagination-txt mb-0">
-          Puslapis {currentPage + 1} iš {totalPages} / Viso {totalElements} rezultatų
+          Puslapis {currentPage + 1} iš {totalPages} / Viso {totalElements}{" "}
+          rezultatų
         </p>
       </div>
     </div>

@@ -1,23 +1,23 @@
-import '../../styles/components/Organisms/Table.scss';
+import "../../styles/components/Organisms/Table.scss";
 
-import React, { useEffect, useState } from 'react';
-import Select from 'react-select';
+import React, { useEffect, useState } from "react";
+import Select from "react-select";
 
-import { ValueType } from '../../types';
-import { filterType, TableActionsType } from '../../types/props';
-import Dropdown from '../Atoms/custom/Dropdown';
-import Heading from '../Atoms/Heading';
-import Icon from '../Atoms/Icon';
-import Button from '../Molecules/Button/Button';
-import Filter from '../Molecules/custom/Filter';
-import Pagination from '../Molecules/custom/Pagination';
+import { ValueType } from "../../types";
+import { filterType, TableActionsType } from "../../types/props";
+import Dropdown from "../Atoms/custom/Dropdown";
+import Heading from "../Atoms/Heading";
+import Icon from "../Atoms/Icon";
+import Button from "../Molecules/Button/Button";
+import Filter from "../Molecules/custom/Filter";
+import Pagination from "../Molecules/custom/Pagination";
 
 const showEntriesOptions = [
-  { value: '5', label: '5' },
-  { value: '10', label: '10' },
-  { value: '25', label: '25' },
-  { value: '50', label: '50' },
-  { value: '100', label: '100' },
+  { value: "5", label: "5" },
+  { value: "10", label: "10" },
+  { value: "25", label: "25" },
+  { value: "50", label: "50" },
+  { value: "100", label: "100" },
 ];
 
 interface TableProps<T> {
@@ -57,10 +57,10 @@ export default function Table<T>({
   onChangePageSize,
   // add new button
   onClickAddNewButton,
-  addNewButtonText = 'Pridėti naują',
+  addNewButtonText = "Pridėti naują",
   showAddNewButton = true,
 }: //   ,
-  TableProps<T>) {
+TableProps<T>) {
   const [_currentPage, setcurrentPage] = useState(currentPage);
   const [_rowsPerPage, setrowsPerPage] = useState(rowsPerPage);
 
@@ -70,19 +70,23 @@ export default function Table<T>({
   const [num, setNum] = useState(0);
 
   //filter data using column, filter and filterType
-  const filterData = (column: keyof T, filterType: filterType, searchValue: string) => {
+  const filterData = (
+    column: keyof T,
+    filterType: filterType,
+    searchValue: string
+  ) => {
     if (column?.toString().length > 0 && searchValue.length > 0) {
       const filteredData = data.filter((item) => {
         const currentItem = (item[column] as unknown as string).toLowerCase();
         searchValue = searchValue.toLowerCase();
         if (column) {
-          if (filterType === 'equals') {
+          if (filterType === "equals") {
             return currentItem === searchValue;
-          } else if (filterType === 'contains') {
+          } else if (filterType === "contains") {
             return currentItem.includes(searchValue);
-          } else if (filterType === 'startsWith') {
+          } else if (filterType === "startsWith") {
             return currentItem.startsWith(searchValue);
-          } else if (filterType === 'endsWith') {
+          } else if (filterType === "endsWith") {
             return currentItem.endsWith(searchValue);
           }
         } else {
@@ -98,38 +102,46 @@ export default function Table<T>({
   };
 
   const sortTable = (n: number) => {
-    let table: any, sort: any, rows: any, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+    let table: any,
+      sort: any,
+      rows: any,
+      switching,
+      i,
+      x,
+      y,
+      shouldSwitch,
+      dir,
+      switchcount = 0;
     setNum(n);
-    console.log('clicked', n, num)
+    console.log("clicked", n, num);
     if (num !== n) {
       let oldsort: any = document.getElementById("sort" + n);
-      oldsort.classList.add('sorteddesc')
+      oldsort.classList.add("sorteddesc");
       sort = document.getElementById("sort" + num);
-      sort.classList.remove('sorteddesc')
-      sort.classList.remove('sortedasc')
+      sort.classList.remove("sorteddesc");
+      sort.classList.remove("sortedasc");
       table = document.getElementById("myTable");
       switching = true;
       dir = "asc";
-      console.log('direction', dir, switching)
+      console.log("direction", dir, switching);
       while (switching) {
         switching = false;
         rows = table.rows;
-        for (i = 1; i < (rows.length - 1); i++) {
+        for (i = 1; i < rows.length - 1; i++) {
           shouldSwitch = false;
           x = rows[i].getElementsByTagName("TD")[n];
           y = rows[i + 1].getElementsByTagName("TD")[n];
           if (dir == "asc") {
             if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-              oldsort.classList.remove('sortedasc')
-              oldsort.classList.add('sorteddesc')
+              oldsort.classList.remove("sortedasc");
+              oldsort.classList.add("sorteddesc");
               shouldSwitch = true;
               break;
             }
           } else if (dir == "desc") {
             if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-
-              oldsort.classList.remove('sorteddesc')
-              oldsort.classList.add('sortedasc')
+              oldsort.classList.remove("sorteddesc");
+              oldsort.classList.add("sortedasc");
               shouldSwitch = true;
               break;
             }
@@ -146,32 +158,30 @@ export default function Table<T>({
           }
         }
       }
-
     } else {
       table = document.getElementById("myTable");
       sort = document.getElementById("sort" + n);
-      sort.classList.add('sorteddesc')
+      sort.classList.add("sorteddesc");
       switching = true;
       dir = "asc";
       while (switching) {
         switching = false;
         rows = table.rows;
-        for (i = 1; i < (rows.length - 1); i++) {
+        for (i = 1; i < rows.length - 1; i++) {
           shouldSwitch = false;
           x = rows[i].getElementsByTagName("TD")[n];
           y = rows[i + 1].getElementsByTagName("TD")[n];
           if (dir == "asc") {
             if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-              sort.classList.remove('sortedasc')
-              sort.classList.add('sorteddesc')
+              sort.classList.remove("sortedasc");
+              sort.classList.add("sorteddesc");
               shouldSwitch = true;
               break;
             }
           } else if (dir == "desc") {
             if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-
-              sort.classList.remove('sorteddesc')
-              sort.classList.add('sortedasc')
+              sort.classList.remove("sorteddesc");
+              sort.classList.add("sortedasc");
               shouldSwitch = true;
               break;
             }
@@ -189,13 +199,12 @@ export default function Table<T>({
         }
       }
     }
-
-  }
+  };
 
   function handleChangeRowsPerPage(e: ValueType) {
     setcurrentPage(0);
     setrowsPerPage(Number(e.value));
-    if (onChangePageSize) onChangePageSize(parseInt(e.value + ''));
+    if (onChangePageSize) onChangePageSize(parseInt(e.value + ""));
   }
 
   function handlePageChange(e: number) {
@@ -209,7 +218,9 @@ export default function Table<T>({
 
   useEffect(() => {
     const startingPoint = _currentPage * _rowsPerPage;
-    setrowsToDisplay(rowsAvailable.slice(startingPoint, startingPoint + _rowsPerPage));
+    setrowsToDisplay(
+      rowsAvailable.slice(startingPoint, startingPoint + _rowsPerPage)
+    );
   }, [_currentPage, _rowsPerPage, rowsAvailable]);
 
   return (
@@ -219,7 +230,7 @@ export default function Table<T>({
           <Heading fontSize="md" fontWeight="bold">
             {addNewButtonText}
             <button className="btn w-auto" onClick={onClickAddNewButton}>
-              <Icon name={'add'} styles={{ marginLeft: '5px' }} size={35} />
+              <Icon name={"add"} styles={{ marginLeft: "5px" }} size={35} />
             </button>
           </Heading>
         </div>
@@ -234,7 +245,12 @@ export default function Table<T>({
                 Object.keys(data[0])
                   .filter((key) => !hide.includes(key as keyof T))
                   .map((mapdata, key) => (
-                    <td key={key} id={"sort" + key} className="text-capitalize font-bold px-2 text-sm headerclick" onClick={() => sortTable(key)}>
+                    <td
+                      key={key}
+                      id={"sort" + key}
+                      className="text-capitalize font-bold px-2 text-sm headerclick"
+                      onClick={() => sortTable(key)}
+                    >
                       {mapdata}
                     </td>
                   ))}
@@ -245,21 +261,23 @@ export default function Table<T>({
               <tr
                 key={index}
                 className="contentrows"
-                onClick={() => handleClickRow && handleClickRow(row)}>
+                onClick={() => handleClickRow && handleClickRow(row)}
+              >
                 {showNumbering && <td className="text-xs">{index + 1}</td>}
                 {Object.keys(row)
                   .filter((key) => !hide.includes(key as keyof T))
                   .map((key) => (
                     <td key={key} className="text-xs px-2">
                       {/* @ts-ignore */}
-                      {typeof row[key] !== 'boolean' ? (
+                      {typeof row[key] !== "boolean" ? (
                         row[key]
                       ) : (
                         <span>
                           <span
                             className={
-                              row[key] ? 'circle-success' : 'circle-fail'
-                            }></span>
+                              row[key] ? "circle-success" : "circle-fail"
+                            }
+                          ></span>
                           <span>Active</span>
                         </span>
                       )}
@@ -270,14 +288,20 @@ export default function Table<T>({
                     <Dropdown
                       header={
                         <Button className="no-styles">
-                          <Icon name={'more'} size={24} styles={{ marginTop: '-9px' }} />
+                          <Icon
+                            name={"more"}
+                            size={24}
+                            styles={{ marginTop: "-9px" }}
+                          />
                         </Button>
-                      }>
+                      }
+                    >
                       {actions.map((action) => (
                         <div
                           key={action.name}
                           className="w-100 bg-white shadow p-0"
-                          onClick={() => action.handleAction(row)}>
+                          onClick={() => action.handleAction(row)}
+                        >
                           <button className="btn col-3 w-100 border-bottom drop-content-btn text-capitalize p-0">
                             {/* <Icon name={action.icon} size={13} /> */}
                             <span className="px-2 text-xs">
@@ -301,12 +325,12 @@ export default function Table<T>({
             className="text-xs"
             name="rowstoDisplay"
             value={showEntriesOptions.find(
-              (option) => option.value === _rowsPerPage + '',
+              (option) => option.value === _rowsPerPage + ""
             )}
             styles={{
               menu: (provided) => ({
                 ...provided,
-                padding: '0px 0px 60px 0px',
+                padding: "0px 0px 60px 0px",
               }),
             }}
             // @ts-ignore
