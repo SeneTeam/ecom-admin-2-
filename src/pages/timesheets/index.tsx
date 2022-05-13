@@ -7,7 +7,7 @@ const Timesheets = () => {
   const { data: employeesData } = employeeStore.getAll();
 
   return (
-    <div className="timesheet-page d-flex w-100">
+    <div className="timesheet-page d-flex">
       <div className="timesheet-page-board">
         {employeesData && employeesData.data.length > 0 && (
           <>

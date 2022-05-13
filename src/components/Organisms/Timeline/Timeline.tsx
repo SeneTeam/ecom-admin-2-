@@ -165,7 +165,7 @@ function initializeGSTC({
       },
       calendarLevels: [customPeriod, day, dayNumber],
       time: {
-        calculatedZoomMode: true,
+        zoom: 20.5,
         from: GSTC.api.date("2022-01-01").valueOf(),
         to: GSTC.api.date("2022-01-01").endOf("month").valueOf(),
       },
