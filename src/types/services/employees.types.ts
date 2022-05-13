@@ -1,4 +1,4 @@
-import { INationality } from './nationalities.types';
+import { INationality } from "./nationalities.types";
 
 export interface IClothingType {
   id: number;
@@ -48,6 +48,27 @@ export interface EmployeeDto {
   seqNumber: string;
 }
 
+export interface WorkActionSummary {
+  id: string;
+  totDays: number;
+  totHours: number;
+  workAction: {
+    id: string;
+    name: string;
+    code: string;
+  };
+}
+
+export interface EmployeeSummaryDto {
+  id: string;
+  year: number;
+  month: number;
+  totDays: number;
+  totHours: number;
+  totHoursByContract: number;
+  workActionSummary: WorkActionSummary[];
+}
+
 export interface EmployeeTableDto {
   address: string;
   // email: string;
@@ -58,7 +79,7 @@ export interface EmployeeTableDto {
   // lastName: string;
   name: string;
   seqNumber: string;
-  contractNumber:string;
+  contractNumber: string;
 }
 
 export interface LoginRes {
@@ -85,9 +106,9 @@ export interface IResetPassword {
 }
 
 export interface IEmployee {
-  'Sutarties Nr.': number;
-  'Grafiko Nr.': string;
-  'Vardas Pavardė': string;
+  "Sutarties Nr.": number;
+  "Grafiko Nr.": string;
+  "Vardas Pavardė": string;
   Pareigos: string;
   Statusas: string;
 }
