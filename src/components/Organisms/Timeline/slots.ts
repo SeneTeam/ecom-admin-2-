@@ -273,6 +273,9 @@ const createNewItems = ({
       label:
         selectedTimeSheet.length > 0 ? selectedTimeSheet[0].code || "DV" : `DV`,
       isTimeSheet: true,
+      resizable: false,
+      canSelect: false,
+      canMove: false,
       time: {
         start: startTime,
         end: endTime,

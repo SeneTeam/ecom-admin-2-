@@ -2,18 +2,26 @@ import React, { useCallback, useEffect } from "react";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import weekOfYear from "dayjs/plugin/weekOfYear";
-import GSTC from "gantt-schedule-timeline-calendar/dist/gstc.wasm.esm.min.js";
 import { Plugin as TimelinePointer } from "gantt-schedule-timeline-calendar/dist/plugins/timeline-pointer.esm.min.js";
 import { Plugin as HighlightWeekends } from "gantt-schedule-timeline-calendar/dist/plugins/highlight-weekends.esm.min.js";
 import { Plugin as ItemMovement } from "gantt-schedule-timeline-calendar/dist/plugins/item-movement.esm.min.js";
 import { Plugin as ItemResizing } from "gantt-schedule-timeline-calendar/dist/plugins/item-resizing.esm.min.js";
-import { Plugin as Selection } from "gantt-schedule-timeline-calendar/dist/plugins/selection.esm.min.js";
+import {
+  EventSelection,
+  ItemOrId,
+  Plugin as Selection,
+} from "gantt-schedule-timeline-calendar/dist/plugins/selection.esm.min.js";
 import "gantt-schedule-timeline-calendar/dist/style.css";
 
 import "../../../styles/components/Timeline/Timeline.scss";
 import { itemSlot, mainOuterSlot, rowSlot, toggleSlot } from "./slots";
 import { updateRowClassAction } from "./actions";
-import { Items, Config, Rows } from "gantt-schedule-timeline-calendar";
+import GSTC, {
+  Items,
+  Config,
+  Rows,
+  Item,
+} from "gantt-schedule-timeline-calendar";
 import { EmployeeDto } from "../../../types/services/employees.types";
 
 //@ts-ignore
@@ -23,7 +31,29 @@ GSTC.api.dayjs.extend(advancedFormat);
 
 let gstc: any, state: any;
 
-// helper functions
+function isItemResizable(item: Item) {
+  if (typeof item.resizable === "boolean") return item.resizable;
+  return true;
+}
+
+function isItemMovable(item: Item) {
+  if (typeof item.canMove === "boolean") return item.canMove;
+  return true;
+}
+
+function canSelectItem(item: Item) {
+  if (typeof item.canSelect === "boolean") return item.canSelect;
+  return true;
+}
+
+function preventSelection(selecting: EventSelection) {
+  return {
+    "chart-timeline-grid-row-cell": selecting["chart-timeline-grid-row-cell"],
+    "chart-timeline-items-row-item": selecting[
+      "chart-timeline-items-row-item"
+    ].filter((item) => canSelectItem(item as Item)),
+  };
+}
 
 function generateRows(employees: EmployeeDto[]) {
   /**
@@ -124,9 +154,45 @@ function initializeGSTC({
     plugins: [
       HighlightWeekends(),
       TimelinePointer(),
-      Selection(),
-      ItemResizing(),
-      ItemMovement(),
+      Selection({
+        events: {
+          onSelecting(selecting, lastSelected) {
+            const filtered = preventSelection(selecting);
+            return filtered;
+          },
+          onEnd(selected, lastSelected) {
+            const filtered = preventSelection(selected);
+            return filtered;
+          },
+        },
+      }),
+      ItemResizing({
+        events: {
+          onResize({ items }) {
+            const filtered = items.after.map((item, index) => {
+              if (!isItemResizable(item)) {
+                return items.before[index];
+              }
+              return item;
+            });
+            return filtered;
+          },
+        },
+      }),
+      ItemMovement({
+        events: {
+          onMove({ items }) {
+            return items.before.map((beforeMovementItem, index) => {
+              const afterMovementItem = items.after[index];
+              const myItem: Item = GSTC.api.merge({}, afterMovementItem);
+              if (!isItemMovable(beforeMovementItem)) {
+                return beforeMovementItem;
+              }
+              return myItem;
+            });
+          },
+        },
+      }),
     ],
     list: {
       columns: {
