@@ -59,23 +59,23 @@ export const rowSlot = (vido: Vido, props: { row: Row }) => {
           <p class="mb-0 lh-base">${props.row.employeeRole.name}</p>
         </div>
       </div>
-      <div class="timesheet-row-summary p-2 justify-content-between">
-        <div>
+      <div class="timesheet-row-summary pt-3 p-2 justify-content-between">
+        <div class="text-start">
           <p class="mb-1">${monthLabel}</p>
-          <p class="mb-1">${monthNumber}</p>
-          <p class="mb-0">${monthDays}</p>
+          <p class="mb-1">${monthNumber} /</p>
+          <p class="mb-0"><strong>${monthDays}</strong></p>
         </div>
         <div class="text-start">
           <div class="mb-1">
-            <span>Darbo valandos</span>
+            <span>Darbo valandos:</span>
             <span class="fw-bold">${totHoursByContract}</span>
           </div>
           <div class="mb-1">
-            <span>Biuleteniai</span>
+            <span style="color: #FFA771">Biuleteniai:</span>
             <span class="fw-bold">${totHours}</span>
           </div>
           <div>
-            <span>Viršvalandžiai</span>
+            <span style="color: #9E41D6">Viršvalandžiai:</span>
             <span class="fw-bold">${totDays}</span>
           </div>
         </div>
