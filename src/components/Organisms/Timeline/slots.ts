@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { formatTimesheet } from "./../../../utils/format-data";
 
 import { DataChartTime, Items, Row } from "gantt-schedule-timeline-calendar";
@@ -9,6 +10,10 @@ import {
   Vido,
 } from "gantt-schedule-timeline-calendar/dist/gstc.wasm.esm.min";
 import { TimeSheet } from "../../../types/employee";
+
+const startDate = dayjs("2022-01-01").startOf("month");
+const endDate = startDate.clone().endOf("month");
+const startTime = startDate.valueOf();
 
 export const rowSlot = (vido: Vido, props: { row: Row }) => {
   const { html, onChange, update, api } = vido;
@@ -110,10 +115,6 @@ export const itemSlot = (vido: Vido, props: { item: Item }) => {
 export function mainOuterSlot(vido: Vido, props: any) {
   const { onChange, api, update, html, state, getElement } = vido;
 
-  const startDate = api.time.date("2022-01-01").startOf("month");
-  const endDate = startDate.clone().endOf("month");
-  const startTime = startDate.valueOf();
-
   onChange((changedProps) => {
     props = changedProps;
   });
@@ -135,8 +136,7 @@ export function mainOuterSlot(vido: Vido, props: any) {
     "Gruodis",
   ];
 
-  let loading = "";
-  let overlay = "";
+  let loading = false;
 
   function updateTime() {
     if (loading) return;
@@ -148,18 +148,17 @@ export function mainOuterSlot(vido: Vido, props: any) {
       .date(`${year}-${month + 1}-01`)
       .endOf("month")
       .valueOf();
-    loading = "LOADING... You can load items from backend now.";
-    overlay = "overlay";
+    loading = true;
     setTimeout(() => {
       // if you have items you can change view
       state.update("config.chart.time", (time: DataChartTime) => {
         time.from = startTime;
         time.to = endTime;
+        time.zoom = 20.5;
         // time.calculatedZoomMode = true;
         return time;
       });
-      loading = "";
-      overlay = "";
+      loading = false;
     }, 250);
   }
 
@@ -221,8 +220,7 @@ export function mainOuterSlot(vido: Vido, props: any) {
         </div>
         </div>
       </div>
-      ${content}
-      <div class=${overlay}>${loading}</div> `;
+      ${content}`;
 }
 
 const createNewItems = ({
