@@ -79,6 +79,11 @@
 
 .gstc__chart-timeline-items-row-item{
   background-color: #fff;
+  border-radius: 5px;
+}
+
+.item-timesheet-text{
+  background-color: #fff;
   box-shadow: 0px 2px 3px rgba(20, 50, 80, 0.05);
   border-radius: 5px;
   color: #212529;
@@ -94,6 +99,20 @@
     margin-top: 2px;
     line-height: 1em;
     color: #2D5474;
+  }
+}
+
+.item-summary-row{
+  .gstc__chart-timeline-items-row-item-label {
+    margin: 0 !important;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .item-timesheet-text{
+    background-color: #EEF1F4;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 8px;
   }
 }
 

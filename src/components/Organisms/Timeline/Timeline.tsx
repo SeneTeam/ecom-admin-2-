@@ -94,6 +94,11 @@ function generateItems(employees: EmployeeDto[]) {
             start: GSTC.api.date(workAction.start).valueOf(),
             end: GSTC.api.date(workAction.end).valueOf(),
           },
+          top: 2,
+          gap: {
+            top: 4,
+            bottom: 4,
+          },
           description: `${dayjs(new Date(workAction.start)).format(
             "MMMM DD"
           )} - ${dayjs(new Date(workAction.end)).format("DD")}d`,
@@ -232,6 +237,7 @@ function initializeGSTC({
       calendarLevels: [customPeriod, day, dayNumber],
       time: {
         zoom: 20.5,
+        // calculatedZoomTrue: true,
         from: GSTC.api.date("2022-01-01").valueOf(),
         to: GSTC.api.date("2022-01-01").endOf("month").valueOf(),
       },

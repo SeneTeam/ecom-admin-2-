@@ -86,17 +86,22 @@ export const rowSlot = (vido: Vido, props: { row: Row }) => {
 export const itemSlot = (vido: Vido, props: { item: Item }) => {
   const { html, onChange, update } = vido;
 
-  let imageSrc = "";
+  let isTimeSheet = false;
   let description = "";
   onChange((newProps) => {
     props = newProps;
     if (!props || !props.item) return;
     description = props.item.description;
+    isTimeSheet = Boolean(props.item.isTimeSheet);
     update();
   });
 
   return (content: htmlResult) =>
-    html` <div class="item-text">
+    html` <div
+      class="item-timesheet-text text-start w-100 ${isTimeSheet
+        ? "item-code"
+        : ""}"
+    >
       <div class="item-label">${content}</div>
       <div class="item-description">${description}</div>
     </div>`;
@@ -273,9 +278,16 @@ const createNewItems = ({
       label:
         selectedTimeSheet.length > 0 ? selectedTimeSheet[0].code || "DV" : `DV`,
       isTimeSheet: true,
+      classNames: ["item-summary-row"],
       resizable: false,
       canSelect: false,
       canMove: false,
+      top: 0,
+      gap: {
+        top: 0,
+        bottom: 0,
+      },
+      height: 68,
       time: {
         start: startTime,
         end: endTime,
