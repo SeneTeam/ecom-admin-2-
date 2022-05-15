@@ -11,7 +11,7 @@ import {
 } from "gantt-schedule-timeline-calendar/dist/gstc.wasm.esm.min";
 import { TimeSheet } from "../../../types/employee";
 
-const startDate = dayjs("2022-01-01").startOf("month");
+const startDate = dayjs().startOf("month");
 const endDate = startDate.clone().endOf("month");
 const startTime = startDate.valueOf();
 
@@ -103,11 +103,13 @@ export const itemSlot = (vido: Vido, props: { item: Item }) => {
 
   return (content: htmlResult) =>
     html` <div
-      class="item-timesheet-text text-start w-100 ${isTimeSheet
-        ? "item-code"
-        : ""}"
+      class="item-timesheet-text w-100 ${
+        isTimeSheet ? "item-code text-center" : "text-start"
+      }"
     >
-      <div class="item-label">${content}</div>
+      <div class="item-label ${
+        isTimeSheet ? "text-center" : "text-start"
+      }"">${content}</div>
       <div class="item-description">${description}</div>
     </div>`;
 };
@@ -149,17 +151,15 @@ export function mainOuterSlot(vido: Vido, props: any) {
       .endOf("month")
       .valueOf();
     loading = true;
-    setTimeout(() => {
-      // if you have items you can change view
-      state.update("config.chart.time", (time: DataChartTime) => {
-        time.from = startTime;
-        time.to = endTime;
-        time.zoom = 20.5;
-        // time.calculatedZoomMode = true;
-        return time;
-      });
-      loading = false;
-    }, 250);
+    state.update("config.chart.time", (time: DataChartTime) => {
+      time.from = startTime;
+      time.to = endTime;
+      time.zoom = 20.5;
+      return time;
+    });
+    api.scrollToTime(startTime, false);
+
+    loading = false;
   }
 
   function setPrevYear() {
