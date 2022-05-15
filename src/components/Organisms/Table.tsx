@@ -257,7 +257,7 @@ TableProps<T>) {
               {actions && <th className="text-center text-xs">Red.</th>}
             </tr>
             {/* Table body */}
-            {rowsToDisplay.map((row, index) => (
+            {rowsToDisplay.map((row: any, index) => (
               <tr
                 key={index}
                 className="contentrows"

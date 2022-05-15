@@ -8,7 +8,6 @@ import { Plugin as ItemMovement } from "gantt-schedule-timeline-calendar/dist/pl
 import { Plugin as ItemResizing } from "gantt-schedule-timeline-calendar/dist/plugins/item-resizing.esm.min.js";
 import {
   EventSelection,
-  ItemOrId,
   Plugin as Selection,
 } from "gantt-schedule-timeline-calendar/dist/plugins/selection.esm.min.js";
 import "gantt-schedule-timeline-calendar/dist/style.css";
@@ -21,6 +20,7 @@ import GSTC, {
   Config,
   Rows,
   Item,
+  ChartCalendarLevelFormat,
 } from "gantt-schedule-timeline-calendar";
 import { EmployeeDto } from "../../../types/services/employees.types";
 
@@ -109,7 +109,7 @@ function generateItems(employees: EmployeeDto[]) {
   return items;
 }
 
-const day = [
+const day: ChartCalendarLevelFormat[] = [
   {
     zoomTo: 100,
     period: "day",
@@ -120,7 +120,7 @@ const day = [
     },
   },
 ];
-const dayNumber = [
+const dayNumber: ChartCalendarLevelFormat[] = [
   {
     zoomTo: 100,
     period: "day",
@@ -131,7 +131,7 @@ const dayNumber = [
   },
 ];
 
-const customPeriod = [
+const customPeriod: ChartCalendarLevelFormat[] = [
   {
     zoomTo: 100,
     period: "week",

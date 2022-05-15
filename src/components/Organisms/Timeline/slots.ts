@@ -237,8 +237,8 @@ const createNewItems = ({
   const now = new Date();
   const start = new Date(now.getFullYear(), 0, 0);
   const diff =
-    now -
-    start +
+    now.getTime() -
+    start.getTime() +
     (start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000;
   const oneDay = 1000 * 60 * 60 * 24;
   const currentDaysYear = Math.floor(diff / oneDay);
