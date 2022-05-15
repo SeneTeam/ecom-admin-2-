@@ -345,5 +345,12 @@ export function toggleSlot(
   });
 
   return (content: htmlResult) =>
-    html` <div class="item-toggle" @click=${loadNewItems}>${content}</div> `;
+    html`
+      <div
+        class="item-toggle ${props.row.withParent ? "with-parent" : ""}"
+        @click=${loadNewItems}
+      >
+        ${content}
+      </div>
+    `;
 }

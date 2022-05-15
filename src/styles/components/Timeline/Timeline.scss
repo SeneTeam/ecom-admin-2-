@@ -181,3 +181,12 @@
 .gstc__chart-timeline-grid-row-cell.current {
   background-color: #E7E7E7 !important;
 }
+
+.item-toggle {
+  &:not(.with-parent) {
+    img {
+      display: none;
+    }
+    background: #F8FAFB;
+  }
+}
