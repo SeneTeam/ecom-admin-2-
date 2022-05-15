@@ -243,6 +243,7 @@ function initializeGSTC({
     },
     scroll: {
       vertical: { precise: true },
+      horizontal: { precise: true },
     },
     slots: {
       "chart-timeline-items-row-item": { content: [itemSlot] },
