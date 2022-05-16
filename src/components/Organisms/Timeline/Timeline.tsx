@@ -276,11 +276,12 @@ function initializeGSTC({
 
 type TimelineProps = {
   employees: EmployeeDto[] | null;
+  data: EmployeeDto[];
   rowsPerPage: number;
   totalPages?: number;
   currentPage: number;
   onChangePage: (_page: number) => void;
-  onChangePageSize?: (_size: number) => void;
+  onChangePageSize: (_size: number) => void;
 };
 
 function Timeline({
@@ -289,9 +290,8 @@ function Timeline({
   rowsPerPage,
   onChangePage,
   onChangePageSize,
+  data,
 }: TimelineProps) {
-  const [_currentPage, setcurrentPage] = useState(currentPage);
-  const [_rowsPerPage, setrowsPerPage] = useState(rowsPerPage);
   const callback = useCallback((element: HTMLDivElement) => {
     if (element && employees)
       initializeGSTC({
@@ -301,17 +301,12 @@ function Timeline({
   }, []);
 
   function handlePageChange(e: number) {
-    if (onChangePage) {
-      onChangePage(e);
-    } else {
-      setcurrentPage(e);
-    }
+    onChangePage(e);
   }
 
   function handleChangeRowsPerPage(e: ValueType) {
-    setcurrentPage(0);
-    setrowsPerPage(Number(e.value));
-    if (onChangePageSize) onChangePageSize(parseInt(e.value + ""));
+    onChangePage(0);
+    onChangePageSize(parseInt(e.value + ""));
   }
 
   useEffect(() => {
@@ -335,7 +330,7 @@ function Timeline({
             className="text-xs"
             name="rowstoDisplay"
             value={showEntriesOptions.find(
-              (option) => option.value === _rowsPerPage + ""
+              (option) => option.value === rowsPerPage + ""
             )}
             styles={{
               menu: (provided) => ({
@@ -349,10 +344,10 @@ function Timeline({
           />
         </div>
         <Pagination
-          totalElements={employees.length}
+          totalElements={data.length}
           paginate={handlePageChange}
-          currentPage={_currentPage}
-          totalPages={Math.ceil(employees.length / _rowsPerPage)}
+          currentPage={currentPage}
+          totalPages={Math.ceil(data.length / rowsPerPage)}
         />
       </div>
     </div>
