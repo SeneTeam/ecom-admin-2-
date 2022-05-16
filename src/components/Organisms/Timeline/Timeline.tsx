@@ -301,8 +301,11 @@ function Timeline({
   }, []);
 
   function handlePageChange(e: number) {
-    setcurrentPage(e);
-    if (onChangePage) onChangePage(e);
+    if (onChangePage) {
+      onChangePage(e);
+    } else {
+      setcurrentPage(e);
+    }
   }
 
   function handleChangeRowsPerPage(e: ValueType) {

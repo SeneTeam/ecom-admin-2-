@@ -14,11 +14,11 @@ const showEntriesOptions = [
 
 const Timesheets = () => {
   const { data: employeesData } = employeeStore.getAll();
-  const [_currentPage, setcurrentPage] = useState(1);
+  const [_currentPage, setcurrentPage] = useState(0);
   const [_rowsPerPage, setrowsPerPage] = useState("5");
 
   function handlePageChange(e: number) {
-    setcurrentPage(e);
+    // setcurrentPage(e);
     return {};
   }
 
@@ -29,7 +29,7 @@ const Timesheets = () => {
           <>
             <Timeline
               employees={employeesData.data}
-              onChangePage={(e) => setcurrentPage(e)}
+              onChangePage={handlePageChange}
               currentPage={_currentPage}
               rowsPerPage={Number(_rowsPerPage)}
             />
