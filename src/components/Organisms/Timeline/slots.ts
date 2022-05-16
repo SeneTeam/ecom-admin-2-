@@ -242,15 +242,17 @@ const createNewItems = ({
     (start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000;
   const oneDay = 1000 * 60 * 60 * 24;
   const currentDaysYear = Math.floor(diff / oneDay);
+  const daysInMonth = dayjs().daysInMonth();
+  const nextTwelveMonths = daysInMonth + 365;
 
-  const fromDate = api.time.date(currentTime).startOf("year");
+  const fromDate = api.time.date(currentTime).startOf("month");
 
   let items: Items = {};
 
   let dateIncrement = 0;
-  for (let i = 0; i < [...Array(365).keys()].length; i++) {
+  for (let i = 0; i < [...Array(nextTwelveMonths).keys()].length; i++) {
     let id = api.GSTCID(String(`month-${rowId}-${i}`));
-    if (dateIncrement >= 365) dateIncrement = 0;
+    if (dateIncrement >= nextTwelveMonths) dateIncrement = 0;
     const startTime = fromDate
       .add(dateIncrement, "day")
       .startOf("day")
