@@ -248,9 +248,9 @@ const createNewItems = ({
   let items: Items = {};
 
   let dateIncrement = 0;
-  for (let i = 0; i < [...Array(currentDaysYear).keys()].length; i++) {
+  for (let i = 0; i < [...Array(365).keys()].length; i++) {
     let id = api.GSTCID(String(`month-${rowId}-${i}`));
-    if (dateIncrement >= currentDaysYear) dateIncrement = 0;
+    if (dateIncrement >= 365) dateIncrement = 0;
     const startTime = fromDate
       .add(dateIncrement, "day")
       .startOf("day")
