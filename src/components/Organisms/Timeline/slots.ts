@@ -61,7 +61,7 @@ export const rowSlot = (vido: Vido, props: { row: Row }) => {
           <h6 class="mb-0 lh-base">
             ${props.row.firstName} ${props.row.lastName}
           </h6>
-          <p class="mb-0 lh-base">${props.row.employeeRole.name}</p>
+          <p class="mb-0 lh-base">${props.row.employeeRole?.name || ""}</p>
         </div>
       </div>
       <div class="timesheet-row-summary pt-3 p-2 justify-content-between">
