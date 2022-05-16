@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import weekOfYear from "dayjs/plugin/weekOfYear";
+import Select from "react-select";
 import { Plugin as TimelinePointer } from "gantt-schedule-timeline-calendar/dist/plugins/timeline-pointer.esm.min.js";
 import { Plugin as HighlightWeekends } from "gantt-schedule-timeline-calendar/dist/plugins/highlight-weekends.esm.min.js";
 import { Plugin as ItemMovement } from "gantt-schedule-timeline-calendar/dist/plugins/item-movement.esm.min.js";
@@ -11,7 +12,7 @@ import {
   Plugin as Selection,
 } from "gantt-schedule-timeline-calendar/dist/plugins/selection.esm.min.js";
 import "gantt-schedule-timeline-calendar/dist/style.css";
-
+import Pagination from "../../Molecules/custom/Pagination";
 import "../../../styles/components/Timeline/Timeline.scss";
 import { itemSlot, mainOuterSlot, rowSlot, toggleSlot } from "./slots";
 import { updateRowClassAction } from "./actions";
@@ -23,6 +24,7 @@ import GSTC, {
   ChartCalendarLevelFormat,
 } from "gantt-schedule-timeline-calendar";
 import { EmployeeDto } from "../../../types/services/employees.types";
+import { ValueType } from "../../../types";
 
 //@ts-ignore
 GSTC.api.dayjs.extend(weekOfYear);
@@ -30,6 +32,14 @@ GSTC.api.dayjs.extend(weekOfYear);
 GSTC.api.dayjs.extend(advancedFormat);
 
 let gstc: any, state: any;
+
+const showEntriesOptions = [
+  { value: "5", label: "5" },
+  { value: "10", label: "10" },
+  { value: "25", label: "25" },
+  { value: "50", label: "50" },
+  { value: "100", label: "100" },
+];
 
 function isItemResizable(item: Item) {
   if (typeof item.resizable === "boolean") return item.resizable;
@@ -266,9 +276,22 @@ function initializeGSTC({
 
 type TimelineProps = {
   employees: EmployeeDto[] | null;
+  rowsPerPage: number;
+  totalPages?: number;
+  currentPage: number;
+  onChangePage: (_page: number) => void;
+  onChangePageSize?: (_size: number) => void;
 };
 
-function Timeline({ employees }: TimelineProps) {
+function Timeline({
+  employees,
+  currentPage,
+  rowsPerPage,
+  onChangePage,
+  onChangePageSize,
+}: TimelineProps) {
+  const [_currentPage, setcurrentPage] = useState(currentPage);
+  const [_rowsPerPage, setrowsPerPage] = useState(rowsPerPage);
   const callback = useCallback((element: HTMLDivElement) => {
     if (element && employees)
       initializeGSTC({
@@ -276,6 +299,17 @@ function Timeline({ employees }: TimelineProps) {
         employees,
       });
   }, []);
+
+  function handlePageChange(e: number) {
+    setcurrentPage(e);
+    if (onChangePage) onChangePage(e);
+  }
+
+  function handleChangeRowsPerPage(e: ValueType) {
+    setcurrentPage(0);
+    setrowsPerPage(Number(e.value));
+    if (onChangePageSize) onChangePageSize(parseInt(e.value + ""));
+  }
 
   useEffect(() => {
     if (employees && state) {
@@ -291,6 +325,33 @@ function Timeline({ employees }: TimelineProps) {
     <div className="App">
       <div className="toolbox"></div>
       <div className="gstc-wrapper" ref={callback}></div>
+      <div className=" my-2">
+        <div className="d-flex align-items-center py-2">
+          <span className="px-3 text-xs">Rodyti</span>
+          <Select
+            className="text-xs"
+            name="rowstoDisplay"
+            value={showEntriesOptions.find(
+              (option) => option.value === _rowsPerPage + ""
+            )}
+            styles={{
+              menu: (provided) => ({
+                ...provided,
+                padding: "0px 0px 60px 0px",
+              }),
+            }}
+            // @ts-ignore
+            onChange={handleChangeRowsPerPage}
+            options={showEntriesOptions}
+          />
+        </div>
+        <Pagination
+          totalElements={employees.length}
+          paginate={handlePageChange}
+          currentPage={_currentPage}
+          totalPages={Math.ceil(employees.length / _rowsPerPage)}
+        />
+      </div>
     </div>
   );
 }
