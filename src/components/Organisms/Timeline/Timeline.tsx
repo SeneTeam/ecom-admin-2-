@@ -113,6 +113,7 @@ function generateItems(employees: EmployeeDto[]) {
             "MMMM DD"
           )} - ${dayjs(new Date(workAction.end)).format("DD")}d`,
           color: workAction.country.color,
+          endDate: employee.endDate,
         };
       }
     });

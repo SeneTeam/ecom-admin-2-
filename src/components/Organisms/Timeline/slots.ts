@@ -258,31 +258,36 @@ const createNewItems = ({
   rowId,
   api,
   timeSheets,
+  endDate,
 }: {
   currentTime: number;
   rowId: string;
   api: Api;
   timeSheets: TimeSheet[];
+  endDate: string;
 }) => {
-  const now = new Date();
-  const start = new Date(now.getFullYear(), 0, 0);
-  const diff =
-    now.getTime() -
-    start.getTime() +
-    (start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000;
   const oneDay = 1000 * 60 * 60 * 24;
-  const currentDaysYear = Math.floor(diff / oneDay);
+
   const daysInMonth = dayjs().daysInMonth();
   const nextTwelveMonths = daysInMonth + 365;
 
   const fromDate = api.time.date(currentTime).startOf("month");
+  const endDateEmployee = api.time.date(endDate).endOf("day").valueOf();
+
+  const diffTime = Math.floor(endDateEmployee - fromDate);
+  const daysTime = Math.floor(diffTime / oneDay);
+  let numberOfItems = nextTwelveMonths;
+
+  if (endDate !== "") {
+    numberOfItems = daysTime + 1;
+  }
 
   let items: Items = {};
 
   let dateIncrement = 0;
-  for (let i = 0; i < [...Array(nextTwelveMonths).keys()].length; i++) {
+  for (let i = 0; i < [...Array(numberOfItems).keys()].length; i++) {
     let id = api.GSTCID(String(`month-${rowId}-${i}`));
-    if (dateIncrement >= nextTwelveMonths) dateIncrement = 0;
+    if (dateIncrement >= numberOfItems) dateIncrement = 0;
     const startTime = fromDate
       .add(dateIncrement, "day")
       .startOf("day")
@@ -351,6 +356,7 @@ export function toggleSlot(
       rowId: props.rowData.children[0],
       api,
       timeSheets: props.row.timeSheets,
+      endDate: props.row.endDate,
     });
 
     const pastItems = state.get("config.chart.items");
