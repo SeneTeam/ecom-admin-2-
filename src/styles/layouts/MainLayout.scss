@@ -2,12 +2,11 @@
 
 .bg {
     background-color: #F8FAFB;
-    height: 100vh;
+    max-height: 100vh;
     padding: 0;
     width: 100vw;
-    overflow-x: hidden;
-    overflow-y: hidden;
-    // @include main-scrollbar();
+
+    @include main-scrollbar();
 
 
     .sidebar-content {
@@ -19,7 +18,7 @@
         margin-bottom: 5rem;
         overflow-y: scroll;
         height: 100vh;
-        // @include main-scrollbar();
+        @include main-scrollbar();
     }
 
     @media (min-width: 992px) {
