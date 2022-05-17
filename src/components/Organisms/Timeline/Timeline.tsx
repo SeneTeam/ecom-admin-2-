@@ -112,6 +112,7 @@ function generateItems(employees: EmployeeDto[]) {
           description: `${dayjs(new Date(workAction.start)).format(
             "MMMM DD"
           )} - ${dayjs(new Date(workAction.end)).format("DD")}d`,
+          color: workAction.country.color,
         };
       }
     });

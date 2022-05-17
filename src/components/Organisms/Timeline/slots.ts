@@ -93,11 +93,13 @@ export const itemSlot = (vido: Vido, props: { item: Item }) => {
 
   let isTimeSheet = false;
   let description = "";
+  let color = "";
   onChange((newProps) => {
     props = newProps;
     if (!props || !props.item) return;
     description = props.item.description;
     isTimeSheet = Boolean(props.item.isTimeSheet);
+    color = props.item.color;
     update();
   });
 
@@ -109,12 +111,28 @@ export const itemSlot = (vido: Vido, props: { item: Item }) => {
           : "text-start d-flex align-items-center justify-content-between"
       }"
     >
-      <div>
+      <div style=${isTimeSheet ? "margin-top:10px" : ""}>
         <div class="item-label ${
           isTimeSheet ? "text-center" : "text-start"
         }"">${content}
         </div>
-        <div class="item-description">${description}</div>
+        <div class="item-description ${
+          isTimeSheet ? "mt-2" : "d-flex align-items-center"
+        }">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <mask id="mask0_1_403" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="2" width="12" height="8">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 10C6.70914 10 8.5 8.20914 8.5 6C8.5 3.79086 6.70914 2 4.5 2C2.29086 2 0.5 3.79086 0.5 6C0.5 8.20914 2.29086 10 4.5 10ZM8.5 3.175V2.13C10.225 2.575 11.5 4.135 11.5 6C11.5 7.865 10.225 9.425 8.5 9.87V8.825C9.665 8.415 10.5 7.305 10.5 6C10.5 4.695 9.665 3.585 8.5 3.175Z" fill="white"/>
+          </mask>
+          <g mask="url(#mask0_1_403)">
+          <rect x="-6.5" y="-6.5" width="25" height="25" fill=${color}/>
+          <mask id="mask1_1_403" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="-7" y="-7" width="26" height="26">
+          <rect x="-6.5" y="-6.5" width="25" height="25" fill="white"/>
+          </mask>
+          <g mask="url(#mask1_1_403)">
+          </g>
+          </g>
+        </svg>
+        <span>${description}</span></div>
       </div>
       <img
         src="/icons/three-dots.svg"
