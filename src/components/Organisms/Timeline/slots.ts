@@ -104,13 +104,25 @@ export const itemSlot = (vido: Vido, props: { item: Item }) => {
   return (content: htmlResult) =>
     html` <div
       class="item-timesheet-text w-100 ${
-        isTimeSheet ? "item-code text-center" : "text-start"
+        isTimeSheet
+          ? "item-code text-center"
+          : "text-start d-flex align-items-center justify-content-between"
       }"
     >
-      <div class="item-label ${
-        isTimeSheet ? "text-center" : "text-start"
-      }"">${content}</div>
-      <div class="item-description">${description}</div>
+      <div>
+        <div class="item-label ${
+          isTimeSheet ? "text-center" : "text-start"
+        }"">${content}
+        </div>
+        <div class="item-description">${description}</div>
+      </div>
+      <img
+        src="/icons/three-dots.svg"
+        className="cursor-pointer"
+        width=16
+        height=16
+        alt="three-dots"
+      />
     </div>`;
 };
 

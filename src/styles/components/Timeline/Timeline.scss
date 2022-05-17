@@ -103,17 +103,24 @@
   }
 }
 
+.gstc__chart-timeline-items-row-item-label {
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
 .item-summary-row{
   .gstc__chart-timeline-items-row-item-label {
     margin: 0 !important;
-    -webkit-mask-image: none;
-    mask-image: none;
   }
   .item-timesheet-text{
     background-color: #EEF1F4;
     box-shadow: none;
     border-radius: 0;
     padding: 8px;
+
+    img {
+      display: none;
+    }
   }
 }
 
