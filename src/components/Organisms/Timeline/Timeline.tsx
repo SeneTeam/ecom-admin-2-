@@ -168,35 +168,7 @@ function initializeGSTC({
   const config = {
     licenseKey:
       "====BEGIN LICENSE KEY====\nhEozEdGF0C9OSXsuzocPicitrl9+gZdzE3bJez0bm0qnEtQPf532PvHhBx1ttSRqDUMCIzXd0kecvmNg1rvB0yv5Bb/BgIUwP91tl9y4qtDkfxO2Kfgl5Ad8fkN769mp7Df4dE256jFaTy3dNdHOStprPHfR7ZoObLLw3n/dqoYxJS89/Aw37Otx+QuG7knQfAhM5Ocrvi23tcg6RdKX8xJ7Ru8WUX/Y5JmFcADxR3opTX4N4NeqNwhRGtalDU9/1GvaGvd0ZqmWT9NTxY4ZVAIkBPGPgAk6VVrcep4ejB1x8liHq+5zOH73BELDwtAnm5HThfdqVri+QZoPRylv5g==||U2FsdGVkX18SokvPv0iNNYlPHrpEudh3l2tKkANL3+35wrMaYqCpvTElKvEAczd3T1PGSd8Whdg4csnUJXHshPVe3baTvqrlBM7EHfZNd68=\nr9ZGP+eU71uUyDDEU8xPkqNC3sgn4mdyjXZwgBsVbJzUs23LrbGHzI/zynMAtDHeEmuGhQRK0e8pfRO6/g9o9A+kEXiG3oyR7CDPREQW/1oBbpsQD32vWejtkj3ZaGZn9wRPG2COYkroZ4Dkq9ewvrCrXNdaxIIyfooK1QSPwvaoF/Vjgs8x6n75gmoRkZWhaCnFwuu7isBuIR+ZOao8SbBZwNfZgGWn9H6nsbK88IXa9VLMufZw4NSs7JhYpNyIyPkQeQpEem/JKW1wkcPThhZOAb/AmBAXGDBQ5GNGTeAGASeRQfTxlUaApji26GFjH16Nykx8mnY9GQNtIHBgEg==\n====END LICENSE KEY====",
-    plugins: [
-      HighlightWeekends(),
-      TimelinePointer(),
-      Selection({
-        events: {
-          onSelecting(selecting, lastSelected) {
-            const filtered = preventSelection(selecting);
-            return filtered;
-          },
-          onEnd(selected, lastSelected) {
-            const filtered = preventSelection(selected);
-            return filtered;
-          },
-        },
-      }),
-      ItemResizing({
-        events: {
-          onResize({ items }) {
-            const filtered = items.after.map((item, index) => {
-              if (!isItemResizable(item)) {
-                return items.before[index];
-              }
-              return item;
-            });
-            return filtered;
-          },
-        },
-      }),
-    ],
+    plugins: [HighlightWeekends(), TimelinePointer()],
     list: {
       columns: {
         data: {
