@@ -101,8 +101,8 @@ function generateItems(employees: EmployeeDto[]) {
           rowId,
           style: { border: `1px solid ${workAction.country.color}` },
           time: {
-            start: GSTC.api.date(workAction.start).valueOf(),
-            end: GSTC.api.date(workAction.end).valueOf(),
+            start: GSTC.api.date(workAction.start).startOf("day").valueOf(),
+            end: GSTC.api.date(workAction.end).endOf("day").valueOf(),
           },
           top: 2,
           gap: {
