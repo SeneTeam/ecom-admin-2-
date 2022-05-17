@@ -194,20 +194,6 @@ function initializeGSTC({
           },
         },
       }),
-      ItemMovement({
-        events: {
-          onMove({ items }) {
-            return items.before.map((beforeMovementItem, index) => {
-              const afterMovementItem = items.after[index];
-              const myItem: Item = GSTC.api.merge({}, afterMovementItem);
-              if (!isItemMovable(beforeMovementItem)) {
-                return beforeMovementItem;
-              }
-              return myItem;
-            });
-          },
-        },
-      }),
     ],
     list: {
       columns: {
